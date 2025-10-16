@@ -1,0 +1,32 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 12px;
+    color-scheme: dark;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-slate-100 font-sans;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold tracking-tight text-slate-50;
+  }
+}
+
+@layer utilities {
+  .glass {
+    @apply bg-surface border border-border backdrop-blur-xl shadow-glass rounded-2xl;
+  }
+
+  .glass-muted {
+    @apply bg-muted border border-border backdrop-blur-lg rounded-xl;
+  }
+}

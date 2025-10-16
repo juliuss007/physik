@@ -1,0 +1,118 @@
+@import "../styles/tailwind.css";
+
+:root {
+  --calendar-grid: rgba(255, 255, 255, 0.06);
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+}
+
+body {
+  background: radial-gradient(circle at top left, rgba(139, 92, 246, 0.2), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.18), transparent 45%),
+    #040510;
+  background-attachment: fixed;
+  color: #e2e8f0;
+}
+
+:root[data-font-scale="sm"] body {
+  font-size: 0.95rem;
+}
+
+:root[data-font-scale="md"] body {
+  font-size: 1rem;
+}
+
+:root[data-font-scale="lg"] body {
+  font-size: 1.08rem;
+}
+
+a {
+  @apply text-accent hover:underline;
+}
+
+main {
+  @apply flex-1 w-full;
+}
+
+.glass-surface {
+  @apply bg-surface border border-border backdrop-blur-xl shadow-glass rounded-2xl;
+}
+
+.glass-section {
+  @apply bg-muted border border-border backdrop-blur-lg rounded-xl p-6;
+}
+
+.katex-display {
+  overflow-x: auto;
+  padding-bottom: 1rem;
+}
+
+.markdown-content h2 {
+  @apply text-xl font-semibold mt-6 mb-3;
+}
+
+.markdown-content h3 {
+  @apply text-lg font-semibold mt-4 mb-2;
+}
+
+.markdown-content {
+  hyphens: auto;
+  word-break: break-word;
+}
+
+.markdown-content p {
+  @apply leading-relaxed mb-4;
+}
+
+.markdown-content pre {
+  @apply bg-muted border border-border backdrop-blur-lg rounded-xl p-4 text-sm font-mono overflow-x-auto mb-4;
+}
+
+.markdown-content code {
+  @apply font-mono text-sm px-1 py-0.5 rounded bg-slate-900/60;
+}
+
+.markdown-content ul {
+  @apply list-disc pl-6 space-y-2 mb-4;
+}
+
+.markdown-content ol {
+  @apply list-decimal pl-6 space-y-2 mb-4;
+}
+
+.markdown-content blockquote {
+  @apply border-l-4 border-accent/60 pl-4 italic text-slate-300;
+}
+
+@media (print) {
+  body {
+    background: #fff;
+    color: #1f2937;
+    font-size: 12pt;
+  }
+
+  .no-print {
+    display: none !important;
+  }
+
+  .print-safe {
+    box-shadow: none !important;
+    background: #fff !important;
+    color: inherit !important;
+  }
+
+  @page {
+    size: A4;
+    margin: 1.6cm;
+  }
+
+  h1,
+  h2,
+  h3 {
+    color: #111827 !important;
+  }
+}
