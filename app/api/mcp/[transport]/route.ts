@@ -1,14 +1,18 @@
 import { createMcpHandler } from "mcp-handler";
-import type { NextRequest } from "next/server";
 import { registerTools } from "@/lib/mcp/tools";
 
 export const runtime = "nodejs";
 
+interface RouteParams {
+  transport: string;
+}
+
 const handler = async (
-  req: NextRequest,
-  { params }: { params: Promise<{ transport: string }> }
+  req: Request,
+  { params }: { params: Promise<RouteParams> | RouteParams }
 ) => {
-  const { transport } = await params;
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const { transport } = resolvedParams;
   const redisUrl = process.env.REDIS_URL;
 
   if (transport === "sse" && !redisUrl) {
