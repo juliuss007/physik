@@ -1,4 +1,5 @@
 @import "../styles/tailwind.css";
+@import url("/katex/katex.min.css");
 
 :root {
   --calendar-grid: rgba(255, 255, 255, 0.06);

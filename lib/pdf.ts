@@ -12,7 +12,11 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
   if (!element) return;
 
   const mod = await import("html2pdf.js");
-  const factory = ((mod as Html2PdfImport).default ?? (mod as unknown as Html2PdfFactory)) as Html2PdfFactory;
+  const namespace = mod as Html2PdfImport;
+  const factory = (typeof namespace === "function" ? namespace : namespace.default) as Html2PdfFactory;
+  if (!factory) {
+    throw new Error("html2pdf.js konnte nicht geladen werden");
+  }
 
   const safeDate = note.updatedAt.split("T")[0];
   const opt = {
@@ -34,6 +38,4 @@ type Html2PdfInstance = {
 
 type Html2PdfFactory = () => Html2PdfInstance;
 
-type Html2PdfImport = {
-  default?: Html2PdfFactory;
-};
+type Html2PdfImport = { default?: Html2PdfFactory } | Html2PdfFactory;

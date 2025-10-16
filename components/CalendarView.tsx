@@ -55,14 +55,6 @@ export function CalendarView() {
     loadStyles();
   }, []);
 
-  if (!stylesLoaded) {
-    return (
-      <div className="glass p-6 text-sm text-slate-300">
-        Kalender wird geladen …
-      </div>
-    );
-  }
-
   const timetableEvents = useMemo<EventInput[]>(
     () =>
       TIMETABLE_DATA.map((entry) => ({
@@ -98,6 +90,14 @@ export function CalendarView() {
       })),
     [events]
   );
+
+  if (!stylesLoaded) {
+    return (
+      <div className="glass p-6 text-sm text-slate-300">
+        Kalender wird geladen …
+      </div>
+    );
+  }
 
   const handleSelect = (selection: DateSelectArg) => {
     setDraftRange({

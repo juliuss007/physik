@@ -174,15 +174,15 @@ export function registerTools(server: McpServer) {
     "module://{slug}",
     {
       list: async () =>
-        MODULES.map((module) => ({
-          uri: `module://${module.slug}`,
+        MODULES.map((entry) => ({
+          uri: `module://${entry.slug}`,
           mimeType: "application/json"
         }))
     },
     async ({ slug }) => {
-      const module = MODULES.find((item) => item.slug === slug);
+      const foundModule = MODULES.find((item) => item.slug === slug);
 
-      if (!module) {
+      if (!foundModule) {
         return {
           contents: [
             {
@@ -197,8 +197,8 @@ export function registerTools(server: McpServer) {
       return {
         contents: [
           {
-            uri: `module://${module.slug}`,
-            text: JSON.stringify(module),
+            uri: `module://${foundModule.slug}`,
+            text: JSON.stringify(foundModule),
             mimeType: "application/json"
           }
         ]
