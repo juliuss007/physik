@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
+import type { PluggableList } from "unified";
 import rehypeSanitize from "rehype-sanitize";
 
 import { markdownSanitizeSchema } from "@/lib/sanitize";
@@ -69,8 +70,8 @@ export function NotePreview({ note, containerId }: NotePreviewProps) {
       </header>
       <article className="markdown-content prose prose-invert max-w-none text-slate-100">
         <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[[rehypeSanitize, markdownSanitizeSchema], rehypeKatex, rehypeRaw]}
+          remarkPlugins={[remarkGfm, remarkMath] as PluggableList}
+          rehypePlugins={[[rehypeSanitize, markdownSanitizeSchema], rehypeKatex, rehypeRaw] as PluggableList}
         >
           {note.content}
         </ReactMarkdown>

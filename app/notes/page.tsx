@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { PlusCircle } from "lucide-react";
 
 import { ModuleSidebar } from "@/components/ModuleSidebar";
@@ -14,7 +14,7 @@ import { filterNotesByModule, filterNotesByTags, searchNotes, useNotes } from "@
 import { formatDate, formatTime } from "@/lib/utils";
 import type { ModuleSlug } from "@/types/app";
 
-export default function NotesPage() {
+function NotesPageInner() {
   const router = useRouter();
   const params = useSearchParams();
   const { notes, createNote } = useNotes();
@@ -99,5 +99,13 @@ export default function NotesPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function NotesPage() {
+  return (
+    <Suspense fallback={<div className="space-y-6">Loading…</div>}>
+      <NotesPageInner />
+    </Suspense>
   );
 }

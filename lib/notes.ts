@@ -1,1 +1,3 @@
-export * from "./notes.tsx";
+"use client";
+
+export * from "./notes/index";

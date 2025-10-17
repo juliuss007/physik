@@ -48,9 +48,10 @@ const handler = async (
     },
     // server options (capabilities are inferred; add display names)
     {
-      name: "phys-notes-mcp",
-      version: "1.0.0",
-      homepage: "https://example.local",
+      serverInfo: {
+        name: "phys-notes-mcp",
+        version: "1.0.0"
+      },
       capabilities: {
         tools: {
           render_math_markdown: { description: "Render Markdown+LaTeX to sanitized HTML" },

@@ -1,4 +1,4 @@
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
+import { McpServer, ResourceTemplate } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import { unified } from "unified";
 import remarkParse from "remark-parse";
@@ -46,22 +46,24 @@ const sanitizeSchema = structuredClone(markdownSanitizeSchema);
 export function registerTools(server: McpServer) {
   server.tool(
     "render_math_markdown",
-    "Render Markdown + LaTeX ($ ... $ / $$ ... $$) into sanitized HTML",
-    z.object({ markdown: z.string().min(1) }),
+    {
+      inputSchema: z.object({ markdown: z.string().min(1) }),
+      description: "Render Markdown + LaTeX ($ ... $ / $$ ... $$) into sanitized HTML"
+    },
     async ({ markdown }) => {
       const file = await unified()
-        .use(remarkParse)
-        .use(remarkGfm)
-        .use(remarkMath)
-        .use(rehypeRaw)
-        .use(rehypeKatex)
-        .use(rehypeSanitize, sanitizeSchema)
-        .use(rehypeStringify)
+        .use(remarkParse as any)
+        .use(remarkGfm as any)
+        .use(remarkMath as any)
+        .use(rehypeRaw as any)
+        .use(rehypeKatex as any)
+        .use(rehypeSanitize as any, sanitizeSchema)
+        .use(rehypeStringify as any)
         .process(markdown);
 
       const html = String(file);
       return {
-        content: [{ type: "text", text: html }],
+        content: [{ type: "text", text: html } as const],
         structuredContent: { html }
       };
     }
@@ -69,11 +71,9 @@ export function registerTools(server: McpServer) {
 
   server.tool(
     "list_modules",
-    "List configured modules",
-    z.object({}).optional(),
     async () => {
       return {
-        content: [{ type: "json", json: MODULES }],
+        content: [{ type: "text", text: JSON.stringify(MODULES) } as const],
         structuredContent: { modules: MODULES }
       };
     }
@@ -81,15 +81,17 @@ export function registerTools(server: McpServer) {
 
   server.tool(
     "compile_timetable_range",
-    "Expand static timetable into a date range",
-    z.object({
-      startISO: z.string().datetime(),
-      endISO: z.string().datetime()
-    }),
+    {
+      inputSchema: z.object({
+        startISO: z.string().datetime(),
+        endISO: z.string().datetime()
+      }),
+      description: "Expand static timetable into a date range"
+    },
     async ({ startISO, endISO }) => {
       const events = expandTimetableToRange(startISO, endISO).filter((event) => event.kind === "class");
       return {
-        content: [{ type: "json", json: events }],
+        content: [{ type: "text", text: JSON.stringify(events) } as const],
         structuredContent: { events }
       };
     }
@@ -97,8 +99,10 @@ export function registerTools(server: McpServer) {
 
   server.tool(
     "validate_event",
-    "Validate and normalize an event (returns id)",
-    eventSchema,
+    {
+      inputSchema: eventSchema,
+      description: "Validate and normalize an event (returns id)"
+    },
     async (args) => {
       const startTime = new Date(args.start).getTime();
       const endTime = args.end ? new Date(args.end).getTime() : undefined;
@@ -140,7 +144,7 @@ export function registerTools(server: McpServer) {
       };
 
       return {
-        content: [{ type: "json", json: { ok: true, event } }],
+        content: [{ type: "text", text: JSON.stringify({ ok: true as const, event }) } as const],
         structuredContent: { ok: true as const, event }
       };
     }
@@ -148,11 +152,13 @@ export function registerTools(server: McpServer) {
 
   server.tool(
     "search_notes_in_payload",
-    "Fulltext search over provided notes array",
-    z.object({
-      notes: z.array(noteSchema),
-      query: z.string().min(1)
-    }),
+    {
+      inputSchema: z.object({
+        notes: z.array(noteSchema),
+        query: z.string().min(1)
+      }),
+      description: "Fulltext search over provided notes array"
+    },
     async ({ notes, query }) => {
       const normalized = query.trim().toLowerCase();
       const hits = (notes as Note[]).filter((note) => {
@@ -164,7 +170,7 @@ export function registerTools(server: McpServer) {
       });
 
       return {
-        content: [{ type: "json", json: hits }],
+        content: [{ type: "text", text: JSON.stringify(hits) } as const],
         structuredContent: { hits }
       };
     }
@@ -172,14 +178,18 @@ export function registerTools(server: McpServer) {
 
   server.resource(
     "module://{slug}",
-    {
-      list: async () =>
-        MODULES.map((entry) => ({
+    new ResourceTemplate("module://{slug}", {
+      list: async (extra) => {
+        const resources = MODULES.map((entry) => ({
+          name: entry.slug,
           uri: `module://${entry.slug}`,
           mimeType: "application/json"
-        }))
-    },
-    async ({ slug }) => {
+        }));
+        return { resources };
+      }
+    }),
+    async (_uri, variables) => {
+      const { slug } = variables;
       const foundModule = MODULES.find((item) => item.slug === slug);
 
       if (!foundModule) {
@@ -208,14 +218,17 @@ export function registerTools(server: McpServer) {
 
   server.resource(
     "timetable://this-week",
-    {
-      list: async () => [
-        {
-          uri: "timetable://this-week",
-          mimeType: "application/json"
-        }
-      ]
-    },
+    new ResourceTemplate("timetable://this-week", {
+      list: async () => ({
+        resources: [
+          {
+            name: "this-week",
+            uri: "timetable://this-week",
+            mimeType: "application/json"
+          }
+        ]
+      })
+    }),
     async () => {
       const now = new Date();
       const day = now.getUTCDay();

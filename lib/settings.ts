@@ -1,1 +1,1 @@
-export * from "./settings.tsx";
+export * from "./settings/index";

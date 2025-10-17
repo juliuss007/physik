@@ -2,15 +2,16 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import type { Route } from "next";
 import { NotebookPen, Calendar, Settings, LayoutDashboard } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
 const navigation = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/notes", label: "Notizen", icon: NotebookPen },
-  { href: "/calendar", label: "Kalender", icon: Calendar },
-  { href: "/settings", label: "Einstellungen", icon: Settings }
+  { href: "/" as Route, label: "Dashboard", icon: LayoutDashboard },
+  { href: "/notes" as Route, label: "Notizen", icon: NotebookPen },
+  { href: "/calendar" as Route, label: "Kalender", icon: Calendar },
+  { href: "/settings" as Route, label: "Einstellungen", icon: Settings }
 ];
 
 export function Header() {
