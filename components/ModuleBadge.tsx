@@ -11,7 +11,7 @@ export function ModuleBadge({ module, className }: ModuleBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border border-border/70 bg-surface/70 px-3 py-1 text-xs font-medium uppercase tracking-wide",
+        "inline-flex items-center gap-2 rounded-full border border-card/40 bg-card/30 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.3em]",
         className
       )}
       style={{ borderColor: MODULE_COLOR_MAP[module], color: MODULE_COLOR_MAP[module] }}

@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { Trash2, Copy, Save } from "lucide-react";
+import { Trash2, Save } from "lucide-react";
 
 import { NoteEditor } from "@/components/NoteEditor";
 import { NotePreview } from "@/components/NotePreview";
@@ -15,7 +15,7 @@ import type { Note } from "@/types/app";
 export default function NoteDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { notes, updateNote, deleteNote, duplicateNote } = useNotes();
+  const { notes, updateNote, deleteNote } = useNotes();
   const [draft, setDraft] = useState<Note | null>(null);
 
   const note = useMemo(() => notes.find((item) => item.id === params.id), [notes, params.id]);
@@ -57,27 +57,17 @@ export default function NoteDetailPage() {
     }
   };
 
-  const handleDuplicate = () => {
-    const copy = duplicateNote(note.id);
-    if (copy) {
-      router.push(`/notes/${copy.id}`);
-    }
-  };
-
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h2 className="text-2xl font-semibold text-slate-50">Notiz bearbeiten</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground">Notiz bearbeiten</h2>
         <div className="flex flex-wrap gap-2">
-          <Button variant="outline" onClick={handleDuplicate} className="gap-2">
-            <Copy className="h-4 w-4" /> Duplizieren
-          </Button>
           <PdfExportButton note={draft} containerId={previewContainerId} />
           <Button variant="destructive" onClick={handleDelete} className="gap-2">
-            <Trash2 className="h-4 w-4" /> Löschen
+            <Trash2 className="h-4 w-4" aria-hidden /> Löschen
           </Button>
           <Button onClick={handleSave} className="gap-2">
-            <Save className="h-4 w-4" /> Speichern
+            <Save className="h-4 w-4" aria-hidden /> Speichern
           </Button>
         </div>
       </div>

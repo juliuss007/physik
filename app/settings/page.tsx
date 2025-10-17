@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Upload, Type } from "lucide-react";
+import { Download, Upload, Type, Palette, FileDown } from "lucide-react";
 
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
@@ -84,15 +84,24 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-6">
-      <header>
-        <h2 className="text-2xl font-semibold text-slate-50">Einstellungen & Backups</h2>
-        <p className="text-sm text-slate-300">Verwalte Datenexport und Darstellung des Editors.</p>
+      <header className="space-y-1">
+        <h2 className="text-3xl font-semibold tracking-tight text-foreground">Einstellungen & Sicherung</h2>
+        <p className="text-sm text-muted-foreground">
+          Verwalte Schriftgröße, exportiere lokale Daten und stelle Backups wieder her.
+        </p>
       </header>
 
-      <GlassCard title="Backup & Restore" description="Sichere deine lokalen Daten oder stelle sie wieder her.">
+      <GlassCard
+        title={
+          <span className="inline-flex items-center gap-2">
+            <FileDown className="h-4 w-4 text-primary" aria-hidden /> Backup & Restore
+          </span>
+        }
+        description="Sichere deine lokalen Daten oder stelle sie wieder her."
+      >
         <div className="grid gap-4 md:grid-cols-2">
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Notizen</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Notizen</h3>
             <Button onClick={handleBackupNotes} className="w-full justify-between">
               <span className="flex items-center gap-2">
                 <Download className="h-4 w-4" /> Exportieren
@@ -101,7 +110,7 @@ export default function SettingsPage() {
             {renderFileInput("notes-import", "Notizen-Backup importieren", handleImportNotes)}
           </div>
           <div className="space-y-3">
-            <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-400">Kalender</h3>
+            <h3 className="text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Kalender</h3>
             <Button onClick={handleBackupEvents} className="w-full justify-between">
               <span className="flex items-center gap-2">
                 <Download className="h-4 w-4" /> Exportieren
@@ -112,9 +121,16 @@ export default function SettingsPage() {
         </div>
       </GlassCard>
 
-      <GlassCard title="Darstellung" description="Passe die Schriftgröße von Editor & Vorschau an.">
-        <div className="flex flex-wrap items-center gap-3">
-          <Type className="h-5 w-5 text-accent" aria-hidden />
+      <GlassCard
+        title={
+          <span className="inline-flex items-center gap-2">
+            <Palette className="h-4 w-4 text-primary" aria-hidden /> Darstellung
+          </span>
+        }
+        description="Passe die Schriftgröße von Editor & Vorschau an."
+      >
+        <div className="flex flex-wrap items-center gap-4">
+          <Type className="h-5 w-5 text-muted-foreground" aria-hidden />
           <div className="flex gap-2">
             {FONT_OPTIONS.map((option) => (
               <Button
@@ -132,7 +148,7 @@ export default function SettingsPage() {
       {(message || error) && (
         <div
           role="status"
-          className={`rounded-xl border px-4 py-3 text-sm ${error ? "border-red-500/40 bg-red-500/10 text-red-200" : "border-accent/40 bg-accent/10 text-accent"}`}
+          className={`rounded-3xl border px-4 py-3 text-sm ${error ? "border-red-500/40 bg-red-500/10 text-red-200" : "border-primary/40 bg-primary/10 text-primary"}`}
         >
           {error ?? message}
         </div>

@@ -2,21 +2,48 @@
 @import url("/katex/katex.min.css");
 
 :root {
-  --calendar-grid: rgba(255, 255, 255, 0.06);
+  --radius: 0.625rem;
+  --background: oklch(0.13 0.02 260);
+  --foreground: oklch(0.97 0.02 260);
+  --card: oklch(0.16 0.02 260);
+  --card-foreground: oklch(0.97 0.02 260);
+  --popover: oklch(0.16 0.02 260);
+  --popover-foreground: oklch(0.97 0.02 260);
+  --primary: oklch(0.83 0.17 19);
+  --primary-foreground: oklch(0.16 0.02 260);
+  --secondary: oklch(0.2 0.02 260);
+  --secondary-foreground: oklch(0.9 0.02 260);
+  --muted: oklch(0.2 0.01 260);
+  --muted-foreground: oklch(0.75 0.02 260);
+  --accent: oklch(0.75 0.14 20);
+  --accent-foreground: oklch(0.16 0.02 260);
+  --destructive: oklch(0.6 0.2 25);
+  --border: oklch(0.32 0.02 260 / 0.5);
+  --input: oklch(0.32 0.02 260 / 0.5);
+  --ring: oklch(0.75 0.1 260);
+  --sidebar: oklch(0.16 0.02 260);
+  --sidebar-foreground: oklch(0.95 0.02 260);
+  --sidebar-primary: oklch(0.83 0.17 19);
+  --sidebar-primary-foreground: oklch(0.16 0.02 260);
+  --sidebar-accent: oklch(0.2 0.02 260);
+  --sidebar-accent-foreground: oklch(0.9 0.02 260);
+  --sidebar-border: oklch(0.32 0.02 260 / 0.4);
+  --sidebar-ring: oklch(0.75 0.1 260);
+  color-scheme: dark;
 }
 
 html,
 body {
-  width: 100%;
   min-height: 100%;
 }
 
 body {
-  background: radial-gradient(circle at top left, rgba(139, 92, 246, 0.2), transparent 40%),
-    radial-gradient(circle at bottom right, rgba(56, 189, 248, 0.18), transparent 45%),
-    #040510;
-  background-attachment: fixed;
-  color: #e2e8f0;
+  font-feature-settings: "ss03", "cv02";
+  background: radial-gradient(circle at 20% -10%, rgb(82 80 192 / 35%), transparent 45%),
+    radial-gradient(circle at 100% 10%, rgb(209 110 139 / 25%), transparent 55%),
+    radial-gradient(circle at 30% 80%, rgb(46 142 179 / 20%), transparent 60%),
+    linear-gradient(160deg, rgb(9 9 20), rgb(8 8 18));
+  color: var(--foreground);
 }
 
 :root[data-font-scale="sm"] body {
@@ -32,19 +59,28 @@ body {
 }
 
 a {
-  @apply text-accent hover:underline;
+  @apply text-accent transition-colors hover:text-accent;
 }
 
 main {
   @apply flex-1 w-full;
 }
 
+
 .glass-surface {
-  @apply bg-surface border border-border backdrop-blur-xl shadow-glass rounded-2xl;
+  background: rgba(14, 15, 30, 0.85);
+  border: 1px solid rgba(110, 120, 150, 0.25);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(16px);
+  box-shadow: 0 25px 45px -20px rgba(20, 20, 55, 0.7);
 }
 
 .glass-section {
-  @apply bg-muted border border-border backdrop-blur-lg rounded-xl p-6;
+  background: rgba(18, 20, 38, 0.8);
+  border: 1px solid rgba(110, 120, 150, 0.2);
+  border-radius: 1.25rem;
+  backdrop-filter: blur(14px);
+  padding: 1.5rem;
 }
 
 .katex-display {
@@ -53,11 +89,11 @@ main {
 }
 
 .markdown-content h2 {
-  @apply text-xl font-semibold mt-6 mb-3;
+  @apply text-2xl font-semibold mt-6 mb-3 tracking-tight;
 }
 
 .markdown-content h3 {
-  @apply text-lg font-semibold mt-4 mb-2;
+  @apply text-xl font-semibold mt-4 mb-2;
 }
 
 .markdown-content {
@@ -66,27 +102,42 @@ main {
 }
 
 .markdown-content p {
-  @apply leading-relaxed mb-4;
+  @apply leading-relaxed mb-4 text-muted-foreground;
 }
 
 .markdown-content pre {
-  @apply bg-muted border border-border backdrop-blur-lg rounded-xl p-4 text-sm font-mono overflow-x-auto mb-4;
+  background: rgba(32, 35, 55, 0.6);
+  border: 1px solid rgba(120, 130, 155, 0.25);
+  border-radius: 1.25rem;
+  padding: 1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-geist-mono), monospace;
+  overflow-x: auto;
+  margin-bottom: 1.5rem;
 }
 
 .markdown-content code {
-  @apply font-mono text-sm px-1 py-0.5 rounded bg-slate-900/60;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.85rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.6rem;
+  background: rgba(32, 35, 55, 0.6);
+  color: var(--accent-foreground);
 }
 
 .markdown-content ul {
-  @apply list-disc pl-6 space-y-2 mb-4;
+  @apply list-disc pl-6 space-y-2 mb-4 text-muted-foreground;
 }
 
 .markdown-content ol {
-  @apply list-decimal pl-6 space-y-2 mb-4;
+  @apply list-decimal pl-6 space-y-2 mb-4 text-muted-foreground;
 }
 
 .markdown-content blockquote {
-  @apply border-l-4 border-accent/60 pl-4 italic text-slate-300;
+  border-left: 4px solid rgba(234, 179, 8, 0.5);
+  padding-left: 1rem;
+  font-style: italic;
+  color: rgba(188, 203, 223, 0.85);
 }
 
 @media (print) {

@@ -1,9 +1,10 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
   "/calendar/page": "app/calendar/page.js",
-  "/notes/[id]/page": "app/notes/[id]/page.js",
-  "/notes/page": "app/notes/page.js",
   "/page": "app/page.js",
   "/settings/page": "app/settings/page.js",
-  "/api/mcp/[transport]/route": "app/api/mcp/[transport]/route.js"
+  "/notes/[id]/page": "app/notes/[id]/page.js",
+  "/notes/page": "app/notes/page.js",
+  "/api/mcp/[transport]/route": "app/api/mcp/[transport]/route.js",
+  "/admin/page": "app/admin/page.js"
 }

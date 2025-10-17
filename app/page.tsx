@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, CalendarDays, FileText } from "lucide-react";
+import { ArrowRight, CalendarDays, FileText, NotebookPen, TrendingUp } from "lucide-react";
 
 import { GlassCard } from "@/components/GlassCard";
 import { ModuleBadge } from "@/components/ModuleBadge";
@@ -27,24 +27,35 @@ export default function DashboardPage() {
   const upcoming = getUpcomingEvents(events, 5);
 
   return (
-    <div className="grid gap-6">
-      <section className="grid gap-4 lg:grid-cols-[2fr,1fr]">
+    <div className="space-y-10">
+      <section className="grid gap-4 lg:grid-cols-[1.8fr,1fr]">
         <GlassCard
-          title="Modulübersicht"
-          description="Fortschritt und Notizstatus für jedes Modul"
+          title={
+            <span className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" aria-hidden />
+              Modulfortschritt
+            </span>
+          }
+          description="Notizstatus je Vorlesung und direkter Zugriff auf alle Inhalte"
           className="h-full"
         >
           <div className="grid gap-4 md:grid-cols-2">
             {moduleNoteCount.map((module) => (
-              <div key={module.slug} className="glass-muted rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <ModuleBadge module={module.slug} />
-                  <span className="text-2xl font-semibold text-slate-100">{module.count}</span>
+              <div
+                key={module.slug}
+                className="rounded-3xl border border-border/30 bg-card/50 p-4 shadow-inner backdrop-blur-sm"
+              >
+                <div className="flex items-start justify-between">
+                  <div className="space-y-1">
+                    <ModuleBadge module={module.slug} />
+                    <p className="text-[0.7rem] uppercase tracking-[0.3em] text-muted-foreground">{module.name}</p>
+                  </div>
+                  <span className="text-3xl font-semibold text-foreground">{module.count}</span>
                 </div>
-                <p className="mt-4 text-sm text-slate-300">
+                <p className="mt-4 text-sm text-muted-foreground">
                   {module.count === 0
-                    ? "Noch keine Notizen."
-                    : `${module.count} ${module.count === 1 ? "Notiz" : "Notizen"}.`}
+                    ? "Noch keine Notizen"
+                    : `${module.count} ${module.count === 1 ? "Notiz" : "Notizen"}`}
                 </p>
                 <Button asChild variant="ghost" className="mt-4 w-full justify-between">
                   <Link href={`/notes?module=${module.slug}`} aria-label={`${module.name} Notizen öffnen`}>
@@ -56,15 +67,12 @@ export default function DashboardPage() {
             ))}
           </div>
         </GlassCard>
-        <GlassCard
-          title="Schnelle Aktionen"
-          description="Starte eine neue Notiz oder plane Prüfungen"
-        >
+        <GlassCard title="Schnelle Aktionen" description="Starte neue Dokumentationen oder plane kommende Termine">
           <div className="space-y-4">
             <Button asChild className="w-full justify-between">
               <Link href="/notes">
                 <span className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" /> Neue Notiz starten
+                  <NotebookPen className="h-4 w-4" /> Neue Notiz beginnen
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -72,7 +80,15 @@ export default function DashboardPage() {
             <Button asChild variant="outline" className="w-full justify-between">
               <Link href="/calendar">
                 <span className="flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4" /> Kalender öffnen
+                  <CalendarDays className="h-4 w-4" /> Kalender verwalten
+                </span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
+            </Button>
+            <Button asChild variant="ghost" className="w-full justify-between">
+              <Link href="/settings">
+                <span className="flex items-center gap-2">
+                  <FileText className="h-4 w-4" /> Backups & Exporte
                 </span>
                 <ArrowRight className="h-4 w-4" />
               </Link>
@@ -82,21 +98,26 @@ export default function DashboardPage() {
       </section>
 
       <section className="grid gap-4 lg:grid-cols-2">
-        <GlassCard title="Zuletzt bearbeitete Notizen" description="Direkter Zugriff auf deine Arbeit">
+        <GlassCard title="Zuletzt aktualisierte Notizen" description="Schnell zurück in laufende Projekte">
           {recentNotes.length === 0 ? (
-            <p className="text-sm text-slate-400">Noch keine Notizen vorhanden.</p>
+            <p className="text-sm text-muted-foreground">Noch keine Notizen vorhanden.</p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {recentNotes.map((note) => (
-                <li key={note.id} className="rounded-xl border border-border/60 bg-surface/60 p-4">
-                  <div className="flex flex-wrap items-center justify-between gap-2">
-                    <div className="space-y-1">
-                      <Link href={`/notes/${note.id}`} className="text-base font-semibold text-slate-100">
+                <li
+                  key={note.id}
+                  className="rounded-3xl border border-border/30 bg-card/40 p-4 shadow-inner backdrop-blur"
+                >
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <div className="space-y-2">
+                      <Link href={`/notes/${note.id}`} className="text-base font-semibold tracking-tight">
                         {note.title}
                       </Link>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
                         <ModuleBadge module={note.module} />
-                        <span>Bearbeitet am {formatDate(note.updatedAt)} um {formatTime(note.updatedAt)}</span>
+                        <span>
+                          {formatDate(note.updatedAt)} · {formatTime(note.updatedAt)}
+                        </span>
                       </div>
                     </div>
                     <Button asChild variant="ghost" size="sm">
@@ -109,23 +130,29 @@ export default function DashboardPage() {
           )}
         </GlassCard>
 
-        <GlassCard title="Anstehende Prüfungen & Termine" description="Halte Deadlines im Blick">
+        <GlassCard title="Anstehende Deadlines" description="Prüfungen, Abgaben und Zwischenstände">
           {upcoming.length === 0 ? (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-muted-foreground">
               Noch keine Termine angelegt. Erstelle Prüfungen im Kalender.
             </p>
           ) : (
-            <ul className="space-y-3">
+            <ul className="space-y-4">
               {upcoming.map((event) => (
-                <li key={event.id} className="rounded-xl border border-border/60 bg-surface/60 p-4">
-                  <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <p className="text-base font-semibold text-slate-100">{event.title}</p>
-                      <p className="text-sm text-slate-300">
-                        {formatDate(event.start)} {event.end ? `• ${formatTime(event.start)} – ${formatTime(event.end)}` : `• ${formatTime(event.start)}`}
+                <li
+                  key={event.id}
+                  className="rounded-3xl border border-border/30 bg-card/40 p-4 shadow-inner backdrop-blur"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="space-y-2">
+                      <p className="text-base font-semibold text-foreground">{event.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        {formatDate(event.start)}
+                        {event.end ? ` · ${formatTime(event.start)} – ${formatTime(event.end)}` : ` · ${formatTime(event.start)}`}
                       </p>
-                      {event.module && <ModuleBadge module={event.module} className="mt-2" />}
-                      {event.description && <p className="mt-2 text-xs text-slate-400">{event.description}</p>}
+                      {event.module && <ModuleBadge module={event.module} className="mt-1" />}
+                      {event.description && (
+                        <p className="text-xs text-muted-foreground/90">{event.description}</p>
+                      )}
                     </div>
                     <Button asChild variant="ghost" size="sm">
                       <Link href="/calendar">Details</Link>

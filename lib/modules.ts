@@ -9,23 +9,23 @@ export interface ModuleDefinition {
 export const MODULES: ModuleDefinition[] = [
   {
     slug: "experimentalphysik-1",
-    name: "Experimentalphysik I - Energie-Raum-Zeit",
-    color: "#38bdf8"
+    name: "Experimentalphysik I · Mechanik",
+    color: "#74c0fc"
   },
   {
     slug: "mathe-physiker-1",
     name: "Mathematik für Physiker I",
-    color: "#facc15"
+    color: "#ffd43b"
   },
   {
     slug: "praktikum-exp-1",
-    name: "Praktikum zu Experimentalphysik I",
-    color: "#f97316"
+    name: "Praktikum Experimentalphysik I",
+    color: "#ffa94d"
   },
   {
     slug: "einfuehrungspraktikum",
     name: "Einführungspraktikum Physik",
-    color: "#22d3ee"
+    color: "#63e6be"
   }
 ];
 

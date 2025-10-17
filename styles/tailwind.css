@@ -3,30 +3,33 @@
 @tailwind utilities;
 
 @layer base {
-  :root {
-    --radius: 12px;
-    color-scheme: dark;
-  }
-
   * {
     @apply border-border;
   }
 
   body {
-    @apply bg-background text-slate-100 font-sans;
+    @apply bg-background text-foreground font-sans;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold tracking-tight text-slate-50;
+    @apply font-semibold tracking-tight text-foreground;
   }
 }
 
 @layer utilities {
   .glass {
-    @apply bg-surface border border-border backdrop-blur-xl shadow-glass rounded-2xl;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(110, 120, 150, 0.25);
+    background: rgba(14, 15, 30, 0.85);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 25px 45px -20px rgba(20, 20, 55, 0.7);
   }
 
   .glass-muted {
-    @apply bg-muted border border-border backdrop-blur-lg rounded-xl;
+    border-radius: 1.5rem;
+    border: 1px solid rgba(110, 120, 150, 0.2);
+    background: rgba(18, 20, 38, 0.7);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgba(140, 150, 180, 0.06);
   }
 }
