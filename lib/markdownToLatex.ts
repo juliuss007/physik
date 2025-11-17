@@ -42,6 +42,9 @@ export function markdownToLatex(markdown: string): string {
     return id;
   });
 
+  // Escape any remaining $ characters (these are literal dollar signs, not math)
+  processed = processed.replace(/\$/g, "\\$");
+
   // Step 2: Convert inline formatting (escape text content)
   // Order: code first, then combined formats, then single formats
 
@@ -146,10 +149,34 @@ export function markdownToLatex(markdown: string): string {
 
   // Step 4: Restore math blocks
   for (const block of mathBlocks) {
-    const replacement = block.type === "display"
-      ? `\n\\[\n${block.content}\n\\]\n`
-      : `\\(${block.content}\\)`;  // Use \(...\) instead of $...$ for better compatibility
-    processed = processed.replace(block.id, replacement);
+    let replacement: string;
+    if (block.type === "display") {
+      replacement = `\n\\[\n${block.content}\n\\]\n`;
+    } else {
+      // For inline math, wrap in \text{} to support text-mode commands like \LaTeX
+      // If content looks like actual math (contains operators, numbers, etc.), keep as-is
+      const looksLikeMath = /[+\-*/=<>^_{}[\]()]/.test(block.content) || /\\(?:frac|sum|int|alpha|beta|gamma|theta|phi|pi|sigma|omega|infty|sqrt|cdot|times|div|leq|geq|neq|approx|partial|nabla|Delta)/i.test(block.content);
+
+      if (looksLikeMath) {
+        replacement = `\\(${block.content}\\)`;
+      } else {
+        // Likely a text command like \LaTeX, wrap in \text{}
+        replacement = `\\(\\text{${block.content}}\\)`;
+      }
+    }
+
+    // Check if placeholder exists before replacing
+    if (!processed.includes(block.id)) {
+      console.warn(`Warning: Math block placeholder ${block.id} not found in processed text`);
+    }
+
+    processed = processed.replace(new RegExp(block.id, 'g'), replacement);
+  }
+
+  // Verify no unreplaced placeholders remain
+  const remainingPlaceholders = processed.match(/XMATHBLK(?:DISP|INLN)\d+ENDX/g);
+  if (remainingPlaceholders) {
+    console.error(`Error: Unreplaced math placeholders found: ${remainingPlaceholders.join(', ')}`);
   }
 
   return processed;

@@ -33,6 +33,9 @@ export function buildLatexDocument(body: string, title: string): string {
 % Math packages
 \\usepackage{amsmath,amssymb,amsfonts}
 
+% Support for \\text{} in math mode
+\\usepackage{amstext}
+
 % Colors - Dark mode
 \\usepackage{xcolor}
 \\definecolor{darkbg}{HTML}{0a0a0a}
