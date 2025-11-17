@@ -24,7 +24,7 @@ function NotesPageInner() {
 
   useEffect(() => {
     setMounted(true);
-    document.title = "Physikonsole - Notizen";
+    document.title = "Physik Konsole - Notizen";
   }, []);
 
   useEffect(() => {

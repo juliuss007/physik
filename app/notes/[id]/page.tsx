@@ -23,7 +23,7 @@ export default function NoteDetailPage() {
   useEffect(() => {
     if (note) {
       setDraft(note);
-      document.title = `Physikonsole - ${note.title || 'Notiz'}`;
+      document.title = `Physik Konsole - ${note.title || 'Notiz'}`;
     }
   }, [note]);
 

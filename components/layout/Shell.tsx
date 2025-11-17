@@ -35,7 +35,7 @@ export function Shell({ children }: { children: ReactNode }) {
           {/* Main header section */}
           <div className="flex-1 border-r border-border p-6">
             <h1 className="text-xl font-bold tracking-widest text-foreground uppercase mb-2">
-              PHYSIK STUDIUM-DASHBOARD
+              Physik Konsole
             </h1>
             <p className="spec-label !text-muted-foreground">
               VORLESUNGEN · LABOR · PRÜFUNGEN

@@ -23,7 +23,7 @@ export default function SettingsPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Physikonsole - Einstellungen";
+    document.title = "Physik Konsole - Einstellungen";
   }, []);
 
   const handleBackupNotes = () => {

@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 
   title: {
-    default: "Physikonsole",
-    template: "%s | Physikonsole"
+    default: "Physik Konsole",
+    template: "%s | Physik Konsole"
   },
   description: "Technical documentation system for physics research and laboratory protocols",
 
@@ -39,15 +39,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "de_DE",
-    siteName: "Physikonsole",
-    title: "Physikonsole",
+    siteName: "Physik Konsole",
+    title: "Physik Konsole",
     description: "Technical documentation system for physics research and laboratory protocols",
     images: [
       {
         url: "/ogimage.png",
         width: 1456,  // Actual dimensions of your ogimage.png
         height: 816,
-        alt: "Physikonsole",
+        alt: "Physik Konsole",
         type: "image/png",
       }
     ],
@@ -56,7 +56,7 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "Physikonsole",
+    title: "Physik Konsole",
     description: "Technical documentation system for physics research and laboratory protocols",
     images: ["/ogimage.png"],
   },
