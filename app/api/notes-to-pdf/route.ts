@@ -9,6 +9,16 @@ type NotesToPdfRequest = {
   title?: string;
 };
 
+function sanitizeFilename(title: string): string {
+  return title
+    .trim()
+    .replace(/\s+/g, "_")  // Replace spaces with underscores
+    .replace(/[^\w\-_.]/g, "")  // Remove special characters except underscore, dash, dot
+    .replace(/_{2,}/g, "_")  // Replace multiple underscores with single
+    .substring(0, 200)  // Limit length
+    || "Notizen";  // Fallback if empty after sanitization
+}
+
 export async function POST(request: NextRequest) {
   try {
     // Parse request body
@@ -32,13 +42,14 @@ export async function POST(request: NextRequest) {
     // Processing
     const markdown = body.content;
     const title = body.title?.trim() || "Notizen";
+    const filename = sanitizeFilename(title) + ".pdf";
     const latexBody = markdownToLatex(markdown);
     const fullDoc = buildLatexDocument(latexBody, title);
 
     // External compile call
     const params = new URLSearchParams();
     params.set("text", fullDoc);
-    params.set("download", "notes.pdf");
+    params.set("download", filename);
     const url = `https://latexonline.cc/compile?${params.toString()}`;
 
     const apiRes = await fetch(url, {
@@ -59,7 +70,7 @@ export async function POST(request: NextRequest) {
         status: 200,
         headers: {
           "Content-Type": "application/pdf",
-          "Content-Disposition": 'attachment; filename="notes.pdf"',
+          "Content-Disposition": `attachment; filename="${filename}"`,
           "Cache-Control": "no-store",
         },
       });

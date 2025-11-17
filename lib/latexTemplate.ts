@@ -27,8 +27,9 @@ export function buildLatexDocument(body: string, title: string): string {
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
 
-% Fonts
-\\usepackage{lmodern}
+% Fonts - IBM Plex (technical/corporate aesthetic)
+\\usepackage[sfdefault]{plex-sans}
+\\usepackage{plex-mono}
 
 % Math packages
 \\usepackage{amsmath,amssymb,amsfonts}
