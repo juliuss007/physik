@@ -1,12 +1,19 @@
 /**
- * Builds a complete styled LaTeX document
+ * Builds a complete styled LaTeX document with dark mode aesthetic
+ * matching the website's engineering datasheet design
  */
 
 function escapeLatexTitle(text: string): string {
   return text
     .replace(/\\/g, "\\textbackslash{}")
-    .replace(/([%_#&{}$])/g, "\\$1")
-    .replace(/\~/g, "\\textasciitilde{}")
+    .replace(/%/g, "\\%")
+    .replace(/\$/g, "\\$")
+    .replace(/#/g, "\\#")
+    .replace(/&/g, "\\&")
+    .replace(/_/g, "\\_")
+    .replace(/\{/g, "\\{")
+    .replace(/\}/g, "\\}")
+    .replace(/~/g, "\\textasciitilde{}")
     .replace(/\^/g, "\\textasciicircum{}");
 }
 
@@ -14,39 +21,68 @@ export function buildLatexDocument(body: string, title: string): string {
   const escapedTitle = escapeLatexTitle(title);
 
   return `\\documentclass[a4paper,11pt]{article}
-\\usepackage[margin=2cm]{geometry}
+
+% Page setup
+\\usepackage[margin=1.5cm]{geometry}
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
+
+% Fonts - Use computer modern for monospace aesthetic
 \\usepackage{lmodern}
+\\renewcommand{\\familydefault}{\\ttdefault}
+
+% Math packages
 \\usepackage{amsmath,amssymb,amsfonts}
 \\usepackage{physics}
 \\usepackage{siunitx}
-\\usepackage{hyperref}
+
+% Colors - Dark mode
 \\usepackage{xcolor}
-\\usepackage{titlesec}
-\\usepackage{parskip}
-
-% Define accent color
+\\definecolor{darkbg}{HTML}{0a0a0a}
+\\definecolor{lighttext}{HTML}{e5e5e5}
 \\definecolor{accent}{HTML}{FF4F00}
+\\definecolor{bordercolor}{HTML}{333333}
 
-% Style sections
-\\titleformat{\\section}{\\Large\\bfseries\\color{accent}}{}{0pt}{}
-\\titleformat{\\subsection}{\\large\\bfsform}{}{0pt}{}
+\\pagecolor{darkbg}
+\\color{lighttext}
 
-% Hyperref setup
+% Section styling - Sharp, outline-only accent
+\\usepackage{titlesec}
+\\titleformat{\\section}
+  {\\large\\bfseries\\color{accent}}
+  {}
+  {0pt}
+  {}
+\\titleformat{\\subsection}
+  {\\normalsize\\bfseries\\color{accent}}
+  {}
+  {0pt}
+  {}
+
+% Hyperlinks
+\\usepackage{hyperref}
 \\hypersetup{
   colorlinks=true,
-  linkcolor=black,
-  urlcolor=blue
+  linkcolor=accent,
+  urlcolor=accent
 }
 
-\\begin{document}
-\\pagestyle{plain}
+% List spacing
+\\usepackage{enumitem}
+\\setlist{itemsep=0.25em, parsep=0pt, topsep=0.5em}
 
-% Title
-{\\huge\\bfseries ${escapedTitle}\\par}
-\\vspace{1em}
-\\hrule
+% Paragraph spacing
+\\usepackage{parskip}
+\\setlength{\\parskip}{0.5em}
+\\setlength{\\parindent}{0pt}
+
+\\begin{document}
+\\pagestyle{empty}
+
+% Title block
+{\\LARGE\\bfseries\\color{lighttext}${escapedTitle}\\par}
+\\vspace{0.75em}
+{\\color{bordercolor}\\hrule height 1pt}
 \\vspace{1em}
 
 % Body content

@@ -12,9 +12,14 @@ interface PdfExportButtonProps {
 
 export function PdfExportButton({ note }: PdfExportButtonProps) {
   const [isExporting, setIsExporting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [compileLog, setCompileLog] = useState<string | null>(null);
 
   const handleExport = async () => {
+    setError(null);
+    setCompileLog(null);
     setIsExporting(true);
+
     try {
       const res = await fetch("/api/notes-to-pdf", {
         method: "POST",
@@ -42,23 +47,52 @@ export function PdfExportButton({ note }: PdfExportButtonProps) {
       // Handle errors
       const data = await res.json().catch(() => null);
       const errorMsg = data?.error ?? "Export fehlgeschlagen";
-
+      setError(errorMsg);
       if (data?.log) {
-        alert(`PDF-Kompilierung fehlgeschlagen:\n\n${errorMsg}\n\nLog:\n${data.log}`);
-      } else {
-        alert(`PDF-Kompilierung fehlgeschlagen:\n\n${errorMsg}`);
+        setCompileLog(data.log);
       }
     } catch (error) {
       console.error("PDF export error:", error);
-      alert("Netzwerkfehler bei PDF-Export");
+      setError("Netzwerkfehler bei PDF-Export");
     } finally {
       setIsExporting(false);
     }
   };
 
   return (
-    <Button onClick={handleExport} disabled={isExporting} variant="outline" className="gap-2">
-      {isExporting ? "KOMPILIERE PDF…" : "PDF EXPORTIEREN"}
-    </Button>
+    <div className="flex flex-col gap-2">
+      <Button onClick={handleExport} disabled={isExporting} variant="outline" className="gap-2">
+        {isExporting ? "KOMPILIERE PDF…" : "PDF EXPORTIEREN"}
+      </Button>
+
+      {error && (
+        <div className="border border-accent bg-background p-3 text-sm">
+          <div className="flex items-start justify-between gap-2 mb-2">
+            <span className="font-mono text-accent">FEHLER</span>
+            <button
+              onClick={() => {
+                setError(null);
+                setCompileLog(null);
+              }}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="Fehler schließen"
+            >
+              ✕
+            </button>
+          </div>
+          <p className="text-foreground mb-2">{error}</p>
+          {compileLog && (
+            <details className="mt-2">
+              <summary className="cursor-pointer text-muted-foreground hover:text-foreground font-mono text-xs">
+                Kompilierungs-Log anzeigen
+              </summary>
+              <pre className="mt-2 p-2 bg-muted text-xs overflow-x-auto font-mono whitespace-pre-wrap break-words">
+                {compileLog}
+              </pre>
+            </details>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
