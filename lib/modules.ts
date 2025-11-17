@@ -15,7 +15,7 @@ export const MODULES: ModuleDefinition[] = [
   {
     slug: "mathe-physiker-1",
     name: "Mathematik für Physiker I",
-    color: "#FFBF00" // YELLOW
+    color: "#996F00" // YELLOW (darkened for contrast)
   },
   {
     slug: "praktikum-exp-1",

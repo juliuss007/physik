@@ -84,8 +84,8 @@ export function CalendarView() {
         end: event.end,
         allDay: event.allDay,
         extendedProps: event,
-        backgroundColor: event.kind === "exam" ? "#00A645" : "#660066", // GREEN for exams, MAGENTA for special
-        borderColor: event.kind === "exam" ? "#00A645" : "#660066",
+        backgroundColor: event.kind === "exam" ? "#008533" : "#660066", // GREEN for exams (darkened), MAGENTA for special
+        borderColor: event.kind === "exam" ? "#008533" : "#660066",
         className: `fc-${event.kind}-event`
       })),
     [events]
@@ -184,7 +184,7 @@ export function CalendarView() {
       </div>
       <legend className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3" style={{ backgroundColor: "#00A645" }} /> Prüfung
+          <span className="h-3 w-3" style={{ backgroundColor: "#008533" }} /> Prüfung
         </span>
         <span className="flex items-center gap-2">
           <span className="h-3 w-3" style={{ backgroundColor: "#660066" }} /> Sondertermin

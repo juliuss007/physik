@@ -25,7 +25,7 @@ export function PdfExportButton({ note, containerId }: PdfExportButtonProps) {
 
   return (
     <Button onClick={handleExport} disabled={isExporting} variant="outline" className="gap-2">
-      {isExporting ? "Exportiere…" : "Als PDF exportieren"}
+      {isExporting ? "Kompiliere PDF…" : "PDF exportieren"}
     </Button>
   );
 }
