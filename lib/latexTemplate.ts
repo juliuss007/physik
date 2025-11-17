@@ -27,9 +27,10 @@ export function buildLatexDocument(body: string, title: string): string {
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
 
-% Fonts - IBM Plex (technical/corporate aesthetic)
-\\usepackage[sfdefault]{plex-sans}
-\\usepackage{plex-mono}
+% Fonts - Helvetica (modern technical aesthetic)
+\\usepackage{helvet}
+\\renewcommand{\\familydefault}{\\sfdefault}
+\\usepackage{courier}  % Courier for monospace
 
 % Math packages
 \\usepackage{amsmath,amssymb,amsfonts}
