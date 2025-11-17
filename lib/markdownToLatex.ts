@@ -148,7 +148,7 @@ export function markdownToLatex(markdown: string): string {
   for (const block of mathBlocks) {
     const replacement = block.type === "display"
       ? `\n\\[\n${block.content}\n\\]\n`
-      : `$${block.content}$`;
+      : `\\(${block.content}\\)`;  // Use \(...\) instead of $...$ for better compatibility
     processed = processed.replace(block.id, replacement);
   }
 
