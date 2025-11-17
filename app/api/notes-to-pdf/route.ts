@@ -12,6 +12,14 @@ type NotesToPdfRequest = {
 function sanitizeFilename(title: string): string {
   return title
     .trim()
+    // Convert German umlauts to ASCII equivalents
+    .replace(/ä/g, "ae")
+    .replace(/ö/g, "oe")
+    .replace(/ü/g, "ue")
+    .replace(/Ä/g, "Ae")
+    .replace(/Ö/g, "Oe")
+    .replace(/Ü/g, "Ue")
+    .replace(/ß/g, "ss")
     .replace(/\s+/g, "_")  // Replace spaces with underscores
     .replace(/[^\w\-_.]/g, "")  // Remove special characters except underscore, dash, dot
     .replace(/_{2,}/g, "_")  // Replace multiple underscores with single
