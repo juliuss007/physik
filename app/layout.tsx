@@ -14,11 +14,52 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   title: "PHYSIK RESEARCH ARCHIVE",
   description: "Technical documentation system for physics research and laboratory protocols",
+
+  // Icons - comprehensive browser support
   icons: {
-    icon: "/PhysikLogoMinimal.svg",
+    icon: [
+      { url: "/PhysikLogoMinimal.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" }  // Fallback for legacy browsers
+    ],
     shortcut: "/PhysikLogoMinimal.svg",
-    apple: "/PhysikLogoMinimal.svg",
-  }
+    apple: [
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" }
+    ],
+    other: [
+      { rel: "mask-icon", url: "/PhysikLogoMinimal.svg", color: "#FF4F00" }  // Safari pinned tab
+    ]
+  },
+
+  // Open Graph
+  openGraph: {
+    type: "website",
+    locale: "de_DE",
+    url: "https://physik.vercel.app",  // Update with your actual domain
+    siteName: "PHYSIK RESEARCH ARCHIVE",
+    title: "PHYSIK RESEARCH ARCHIVE",
+    description: "Technical documentation system for physics research and laboratory protocols",
+    images: [
+      {
+        url: "/ogimage.png",
+        width: 1200,
+        height: 630,
+        alt: "PHYSIK RESEARCH ARCHIVE",
+        type: "image/png",
+      }
+    ],
+  },
+
+  // Twitter Card
+  twitter: {
+    card: "summary_large_image",
+    title: "PHYSIK RESEARCH ARCHIVE",
+    description: "Technical documentation system for physics research and laboratory protocols",
+    images: ["/ogimage.png"],
+  },
+
+  // Additional metadata
+  manifest: "/site.webmanifest",  // For PWA support (optional)
+  themeColor: "#0a0a0a",  // Dark background color
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
