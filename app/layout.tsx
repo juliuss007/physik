@@ -15,9 +15,9 @@ export const metadata: Metadata = {
   title: "PHYSIK RESEARCH ARCHIVE",
   description: "Technical documentation system for physics research and laboratory protocols",
   icons: {
-    icon: "/PhysikLogo.svg",
-    shortcut: "/PhysikLogo.svg",
-    apple: "/PhysikLogo.svg",
+    icon: "/PhysikLogoMinimal.svg",
+    shortcut: "/PhysikLogoMinimal.svg",
+    apple: "/PhysikLogoMinimal.svg",
   }
 };
 
