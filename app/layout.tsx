@@ -13,7 +13,12 @@ const ibmPlexMono = IBM_Plex_Mono({
 
 export const metadata: Metadata = {
   title: "PHYSIK RESEARCH ARCHIVE",
-  description: "Technical documentation system for physics research and laboratory protocols"
+  description: "Technical documentation system for physics research and laboratory protocols",
+  icons: {
+    icon: "/PhysikLogo.svg",
+    shortcut: "/PhysikLogo.svg",
+    apple: "/PhysikLogo.svg",
+  }
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
