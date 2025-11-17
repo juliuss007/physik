@@ -7,7 +7,7 @@ Next.js 14 App-Router-Projekt für einen lokalen Notiz- und Prüfungs-Tracker im
 - Markdown-Editor mit Live-Vorschau (react-markdown + KaTeX)
 - Clientseitiger PDF-Export mittels `html2pdf.js` inkl. Print-Styles
 - FullCalendar (Monats- & Wochenansicht) mit festem Stundenplan und eigenen Prüfungen
-- Backup/Restore von Notizen & Events (JSON), Schriftgrößen-Umschalter
+- Backup/Restore von Notizen & Events (JSON), iCal-Export (.ics), Schriftgrößen-Umschalter
 - Vollständig clientseitig, Statusverwaltung via Context + Reducer
 
 ## Erste Schritte

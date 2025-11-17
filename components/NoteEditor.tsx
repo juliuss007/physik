@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { useSettings } from "@/lib/settings";
 
 interface NoteEditorProps {
   note: Note;
@@ -20,11 +19,6 @@ export function NoteEditor({ note, onChange }: NoteEditorProps) {
   const moduleId = useId();
   const tagsId = useId();
   const contentId = useId();
-  const {
-    settings: { fontScale }
-  } = useSettings();
-
-  const fontClass = fontScale === "sm" ? "text-sm" : fontScale === "lg" ? "text-base" : "text-sm";
 
   return (
     <div className="space-y-4">
@@ -45,10 +39,10 @@ export function NoteEditor({ note, onChange }: NoteEditorProps) {
             aria-label="Modulauswahl"
             value={note.module}
             onChange={(event) => onChange({ ...note, module: event.target.value as Note["module"] })}
-            className="h-10 w-full rounded-lg border border-border/60 bg-surface/60 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent/70"
+            className="h-10 w-full border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
           >
             {MODULES.map((module) => (
-              <option key={module.slug} value={module.slug} className="bg-slate-900">
+              <option key={module.slug} value={module.slug} className="bg-card">
                 {module.name}
               </option>
             ))}
@@ -77,13 +71,13 @@ export function NoteEditor({ note, onChange }: NoteEditorProps) {
         <Textarea
           id={contentId}
           aria-label="Markdown Editor"
-          className={cn("min-h-[480px] resize-vertical font-mono", fontClass === "text-base" ? "text-base" : "text-sm")}
+          className="min-h-[480px] resize-vertical font-mono text-sm"
           value={note.content}
           onChange={(event) => onChange({ ...note, content: event.target.value })}
           spellCheck={false}
         />
       </div>
-      <p className="text-xs text-slate-400">
+      <p className="spec-label">
         Aktualisiert: {new Date(note.updatedAt).toLocaleString("de-DE", { dateStyle: "medium", timeStyle: "short" })}
       </p>
     </div>

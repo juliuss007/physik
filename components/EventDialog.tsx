@@ -63,8 +63,8 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent aria-describedby="event-dialog-description" className="space-y-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-slate-100">
-            <CalendarClock className="h-5 w-5 text-accent" aria-hidden />
+          <DialogTitle className="flex items-center gap-2 text-foreground uppercase tracking-wide">
+            <CalendarClock className="h-5 w-5 text-primary" aria-hidden />
             {heading}
           </DialogTitle>
         </DialogHeader>
@@ -108,10 +108,10 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
                 id="event-module"
                 value={module ?? ""}
                 onChange={(event) => setModule(event.target.value as ModuleSlug | "")}
-                className="h-10 w-full rounded-lg border border-border/60 bg-surface/60 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent/70"
+                className="h-10 w-full border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               >
                 {moduleOptions.map((option) => (
-                  <option key={option.value || "none"} value={option.value} className="bg-slate-900">
+                  <option key={option.value || "none"} value={option.value} className="bg-card">
                     {option.label}
                   </option>
                 ))}
@@ -123,12 +123,12 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
                 id="event-kind"
                 value={kind}
                 onChange={(event) => setKind(event.target.value as CalendarEvent["kind"])}
-                className="h-10 w-full rounded-lg border border-border/60 bg-surface/60 px-3 text-sm text-slate-100 focus:outline-none focus:ring-2 focus:ring-accent/70"
+                className="h-10 w-full border border-border bg-card px-3 text-sm text-foreground focus:outline-none focus:border-primary transition-colors"
               >
-                <option value="exam" className="bg-slate-900">
+                <option value="exam" className="bg-card">
                   Prüfung
                 </option>
-                <option value="special" className="bg-slate-900">
+                <option value="special" className="bg-card">
                   Sondertermin
                 </option>
               </select>

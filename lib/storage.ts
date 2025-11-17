@@ -53,6 +53,17 @@ export function downloadJson(filename: string, payload: unknown) {
   setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
+export function downloadTextFile(filename: string, content: string, mime = "text/plain") {
+  if (!isBrowser()) return;
+  const blob = new Blob([content], { type: mime });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = filename;
+  link.click();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
+}
+
 export function readFileAsJson<T>(file: File): Promise<T> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();

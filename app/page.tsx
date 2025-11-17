@@ -1,7 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { ArrowRight, CalendarDays, FileText, NotebookPen, TrendingUp } from "lucide-react";
+import { motion } from "framer-motion";
 
 import { GlassCard } from "@/components/GlassCard";
 import { ModuleBadge } from "@/components/ModuleBadge";
@@ -10,13 +13,21 @@ import { useNotes } from "@/lib/notes";
 import { getUpcomingEvents, useCalendar } from "@/lib/calendar";
 import { Button } from "@/components/ui/button";
 import { formatDate, formatTime } from "@/lib/utils";
+import { downloadJson } from "@/lib/storage";
 
 export default function DashboardPage() {
-  const { notes } = useNotes();
+  const router = useRouter();
+  const { notes, createNote } = useNotes();
   const { events } = useCalendar();
+  const [mounted, setMounted] = useState(false);
 
-  const moduleNoteCount = MODULES.map((module) => ({
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const moduleNoteCount = MODULES.map((module, index) => ({
     ...module,
+    code: `MOD-${String(index + 1).padStart(2, '0')}`,
     count: notes.filter((note) => note.module === module.slug).length
   }));
 
@@ -26,141 +37,183 @@ export default function DashboardPage() {
 
   const upcoming = getUpcomingEvents(events, 5);
 
+  const handleCreateNote = () => {
+    const note = createNote();
+    router.push(`/notes/${note.id}`);
+  };
+
+  const handleExportNotes = () => {
+    downloadJson("notizen-backup.json", notes);
+  };
+
+  const handleExportEvents = () => {
+    downloadJson("termine-backup.json", events);
+  };
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
+      {/* Main grid - module status and quick actions */}
       <section className="grid gap-4 lg:grid-cols-[1.8fr,1fr]">
         <GlassCard
-          title={
-            <span className="flex items-center gap-2">
-              <TrendingUp className="h-5 w-5 text-primary" aria-hidden />
-              Modulfortschritt
-            </span>
-          }
-          description="Notizstatus je Vorlesung und direkter Zugriff auf alle Inhalte"
+          title="MODULE"
+          description="NOTIZEN PRO VORLESUNG"
+          variant="default"
+          animationDelay={0}
           className="h-full"
         >
-          <div className="grid gap-4 md:grid-cols-2">
+          <div className="border border-border divide-y divide-border">
             {moduleNoteCount.map((module) => (
-              <div
-                key={module.slug}
-                className="rounded-3xl border border-border/30 bg-card/50 p-4 shadow-inner backdrop-blur-sm"
-              >
-                <div className="flex items-start justify-between">
-                  <div className="space-y-1">
-                    <ModuleBadge module={module.slug} />
-                    <p className="text-[0.7rem] uppercase tracking-[0.3em] text-muted-foreground">{module.name}</p>
-                  </div>
-                  <span className="text-3xl font-semibold text-foreground">{module.count}</span>
-                </div>
-                <p className="mt-4 text-sm text-muted-foreground">
-                  {module.count === 0
-                    ? "Noch keine Notizen"
-                    : `${module.count} ${module.count === 1 ? "Notiz" : "Notizen"}`}
-                </p>
-                <Button asChild variant="ghost" className="mt-4 w-full justify-between">
-                  <Link href={`/notes?module=${module.slug}`} aria-label={`${module.name} Notizen öffnen`}>
-                    Notizen ansehen
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
-                </Button>
+              <div key={module.slug} className="flex items-center justify-between p-3">
+                <span className="spec-label">{module.name}</span>
+                <span className="text-foreground font-mono text-sm">{String(module.count).padStart(3, '0')}</span>
               </div>
             ))}
           </div>
         </GlassCard>
-        <GlassCard title="Schnelle Aktionen" description="Starte neue Dokumentationen oder plane kommende Termine">
-          <div className="space-y-4">
-            <Button asChild className="w-full justify-between">
-              <Link href="/notes">
-                <span className="flex items-center gap-2">
-                  <NotebookPen className="h-4 w-4" /> Neue Notiz beginnen
-                </span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full justify-between">
-              <Link href="/calendar">
-                <span className="flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4" /> Kalender verwalten
-                </span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="ghost" className="w-full justify-between">
-              <Link href="/settings">
-                <span className="flex items-center gap-2">
-                  <FileText className="h-4 w-4" /> Backups & Exporte
-                </span>
-                <ArrowRight className="h-4 w-4" />
-              </Link>
-            </Button>
+
+        <GlassCard
+          title="AKTIONEN"
+          variant="default"
+          animationDelay={0.1}
+        >
+          <div className="border border-border divide-y divide-border">
+            <button
+              type="button"
+              onClick={handleCreateNote}
+              className="w-full block p-4 transition-opacity hover:opacity-70 cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">NEUE NOTIZ</span>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+            </button>
+            <Link href="/calendar" className="block p-4 transition-opacity hover:opacity-70 cursor-pointer">
+              <div className="flex items-center justify-between">
+                <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">NEUEN KALENDEREINTRAG HINZUFÜGEN</span>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+            </Link>
+            <button
+              type="button"
+              onClick={handleExportNotes}
+              className="w-full block p-4 transition-opacity hover:opacity-70 cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">NOTIZEN EXPORTIEREN</span>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+            </button>
+            <button
+              type="button"
+              onClick={handleExportEvents}
+              className="w-full block p-4 transition-opacity hover:opacity-70 cursor-pointer text-left"
+            >
+              <div className="flex items-center justify-between">
+                <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">TERMINE EXPORTIEREN</span>
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
+              </div>
+            </button>
+          </div>
+
+          {/* System status */}
+          <div className="border border-border mt-4">
+            <div className="border-b border-border px-4 py-2">
+              <div className="flex items-center justify-between">
+                <span className="spec-label">STATUS</span>
+                <span className="spec-label text-primary">■ AKTIV</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 divide-x divide-border text-[0.7rem] font-mono">
+              <div className="p-3">
+                <div className="spec-label mb-1">NOTIZEN</div>
+                <div className="text-foreground text-lg">{String(notes.length).padStart(3, '0')}</div>
+              </div>
+              <div className="p-3">
+                <div className="spec-label mb-1">TERMINE</div>
+                <div className="text-foreground text-lg">{String(events.length).padStart(3, '0')}</div>
+              </div>
+            </div>
           </div>
         </GlassCard>
       </section>
 
+      {/* Recent entries and upcoming events */}
       <section className="grid gap-4 lg:grid-cols-2">
-        <GlassCard title="Zuletzt aktualisierte Notizen" description="Schnell zurück in laufende Projekte">
+        <GlassCard
+          title="NOTIZEN"
+          description="ZULETZT BEARBEITET"
+          variant="default"
+          animationDelay={0.2}
+        >
           {recentNotes.length === 0 ? (
-            <p className="text-sm text-muted-foreground">Noch keine Notizen vorhanden.</p>
+            <div className="border border-border p-6 text-center">
+              <p className="spec-label !text-muted-foreground">KEINE EINTRÄGE</p>
+            </div>
           ) : (
-            <ul className="space-y-4">
+            <div className="border border-border divide-y divide-border">
               {recentNotes.map((note) => (
-                <li
+                <Link
                   key={note.id}
-                  className="rounded-3xl border border-border/30 bg-card/40 p-4 shadow-inner backdrop-blur"
+                  href={`/notes/${note.id}`}
+                  className="block p-4 transition-opacity hover:opacity-70 cursor-pointer"
                 >
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <div className="space-y-2">
-                      <Link href={`/notes/${note.id}`} className="text-base font-semibold tracking-tight">
-                        {note.title}
-                      </Link>
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-                        <ModuleBadge module={note.module} />
-                        <span>
-                          {formatDate(note.updatedAt)} · {formatTime(note.updatedAt)}
-                        </span>
-                      </div>
-                    </div>
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href={`/notes/${note.id}`}>Weiterarbeiten</Link>
-                    </Button>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <span className="text-sm font-bold tracking-wide uppercase text-foreground flex-1">
+                      {note.title}
+                    </span>
+                    <span className="spec-label">→</span>
                   </div>
-                </li>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <ModuleBadge module={note.module} />
+                    <span className="spec-label font-mono" suppressHydrationWarning>
+                      {mounted && `${formatDate(note.updatedAt)} · ${formatTime(note.updatedAt)}`}
+                    </span>
+                  </div>
+                </Link>
               ))}
-            </ul>
+            </div>
           )}
         </GlassCard>
 
-        <GlassCard title="Anstehende Deadlines" description="Prüfungen, Abgaben und Zwischenstände">
+        <GlassCard
+          title="TERMINE"
+          description="ANSTEHENDE DEADLINES"
+          variant="default"
+          animationDelay={0.25}
+        >
           {upcoming.length === 0 ? (
-            <p className="text-sm text-muted-foreground">
-              Noch keine Termine angelegt. Erstelle Prüfungen im Kalender.
-            </p>
+            <div className="border border-border p-6 text-center">
+              <p className="spec-label !text-muted-foreground">KEINE TERMINE</p>
+            </div>
           ) : (
-            <ul className="space-y-4">
+            <div className="border border-border divide-y divide-border">
               {upcoming.map((event) => (
-                <li
+                <Link
                   key={event.id}
-                  className="rounded-3xl border border-border/30 bg-card/40 p-4 shadow-inner backdrop-blur"
+                  href="/calendar"
+                  className="block p-4 transition-opacity hover:opacity-70 cursor-pointer"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-2">
-                      <p className="text-base font-semibold text-foreground">{event.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {formatDate(event.start)}
-                        {event.end ? ` · ${formatTime(event.start)} – ${formatTime(event.end)}` : ` · ${formatTime(event.start)}`}
-                      </p>
-                      {event.module && <ModuleBadge module={event.module} className="mt-1" />}
-                      {event.description && (
-                        <p className="text-xs text-muted-foreground/90">{event.description}</p>
-                      )}
-                    </div>
-                    <Button asChild variant="ghost" size="sm">
-                      <Link href="/calendar">Details</Link>
-                    </Button>
+                  <div className="flex items-start justify-between gap-4 mb-2">
+                    <span className="text-sm font-bold uppercase text-foreground tracking-wide flex-1">{event.title}</span>
+                    <span className="spec-label">→</span>
                   </div>
-                </li>
+                  <div className="space-y-2">
+                    <p className="spec-label !text-muted-foreground font-mono" suppressHydrationWarning>
+                      {mounted && (
+                        <>
+                          {formatDate(event.start)}
+                          {event.end ? ` · ${formatTime(event.start)} – ${formatTime(event.end)}` : ` · ${formatTime(event.start)}`}
+                        </>
+                      )}
+                    </p>
+                    {event.module && <ModuleBadge module={event.module} />}
+                    {event.description && (
+                      <p className="text-[0.7rem] text-muted-foreground pl-2 border-l border-border">{event.description}</p>
+                    )}
+                  </div>
+                </Link>
               ))}
-            </ul>
+            </div>
           )}
         </GlassCard>
       </section>

@@ -1,4 +1,7 @@
+"use client";
+
 import type { HTMLAttributes, ReactNode } from "react";
+import { motion } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
@@ -6,25 +9,60 @@ interface GlassCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
   title?: ReactNode;
   description?: ReactNode;
   footer?: ReactNode;
+  variant?: "default" | "primary";
+  animationDelay?: number;
 }
 
-export function GlassCard({ title, description, footer, className, children, ...props }: GlassCardProps) {
+export function GlassCard({
+  title,
+  description,
+  footer,
+  variant = "default",
+  animationDelay = 0,
+  className,
+  children,
+  ...props
+}: GlassCardProps) {
   return (
-    <section
+    <motion.section
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{
+        duration: 0.15,
+        delay: animationDelay
+      }}
       className={cn(
-        "rounded-3xl border border-border/40 bg-card/60 p-6 text-foreground shadow-glass backdrop-blur-xl",
+        "border border-border bg-card p-0 text-foreground",
+        variant === "primary" && "border-primary",
         className
       )}
       {...props}
     >
+      {/* Header */}
       {(title || description) && (
-        <header className="mb-5 space-y-2">
-          {title && <h2 className="text-xl font-semibold tracking-tight text-foreground">{title}</h2>}
-          {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        <header className="border-b border-border p-4">
+          {title && (
+            <h2 className="text-xs font-bold tracking-widest uppercase text-foreground mb-1">
+              {title}
+            </h2>
+          )}
+          {description && (
+            <p className="spec-label !text-muted-foreground">
+              {description}
+            </p>
+          )}
         </header>
       )}
-      <div className="space-y-4 text-foreground">{children}</div>
-      {footer && <footer className="mt-6 flex items-center justify-end gap-3 text-sm text-muted-foreground">{footer}</footer>}
-    </section>
+
+      {/* Content */}
+      <div className="p-6 space-y-4">{children}</div>
+
+      {/* Footer */}
+      {footer && (
+        <footer className="border-t border-border p-4 text-[0.7rem] text-muted-foreground">
+          {footer}
+        </footer>
+      )}
+    </motion.section>
   );
 }

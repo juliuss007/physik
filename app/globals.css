@@ -1,35 +1,119 @@
 @import "../styles/tailwind.css";
 @import url("/katex/katex.min.css");
 
-:root {
-  --radius: 0.625rem;
-  --background: oklch(0.13 0.02 260);
-  --foreground: oklch(0.97 0.02 260);
-  --card: oklch(0.16 0.02 260);
-  --card-foreground: oklch(0.97 0.02 260);
-  --popover: oklch(0.16 0.02 260);
-  --popover-foreground: oklch(0.97 0.02 260);
-  --primary: oklch(0.83 0.17 19);
-  --primary-foreground: oklch(0.16 0.02 260);
-  --secondary: oklch(0.2 0.02 260);
-  --secondary-foreground: oklch(0.9 0.02 260);
-  --muted: oklch(0.2 0.01 260);
-  --muted-foreground: oklch(0.75 0.02 260);
-  --accent: oklch(0.75 0.14 20);
-  --accent-foreground: oklch(0.16 0.02 260);
-  --destructive: oklch(0.6 0.2 25);
-  --border: oklch(0.32 0.02 260 / 0.5);
-  --input: oklch(0.32 0.02 260 / 0.5);
-  --ring: oklch(0.75 0.1 260);
-  --sidebar: oklch(0.16 0.02 260);
-  --sidebar-foreground: oklch(0.95 0.02 260);
-  --sidebar-primary: oklch(0.83 0.17 19);
-  --sidebar-primary-foreground: oklch(0.16 0.02 260);
-  --sidebar-accent: oklch(0.2 0.02 260);
-  --sidebar-accent-foreground: oklch(0.9 0.02 260);
-  --sidebar-border: oklch(0.32 0.02 260 / 0.4);
-  --sidebar-ring: oklch(0.75 0.1 260);
+:root,
+:root.dark {
+  /* Engineering datasheet theme - strict monochrome with fluorescent accents */
+  --radius: 0rem; /* No rounded corners - sharp rectilinear only */
+
+  /* Pure black background */
+  --background: #000000;
+  --foreground: #E8E8E8;
+
+  /* Card surfaces - subtle gray on black */
+  --card: #0A0A0A;
+  --card-foreground: #E8E8E8;
+
+  /* Fluorescent accent - international orange */
+  --primary: #FF4F00; /* International Orange */
+  --primary-foreground: #000000;
+
+  /* Secondary orange variant - brighter */
+  --secondary: #FF6B35; /* Bright Orange */
+  --secondary-foreground: #000000;
+
+  /* Tertiary accent - darker orange */
+  --accent: #CC3F00; /* Dark Orange */
+  --accent-foreground: #FFFFFF;
+
+  /* Grayscale hierarchy */
+  --muted: #1A1A1A;
+  --muted-foreground: #666666;
+
+  /* Spec text - tiny gray */
+  --spec-text: #4A4A4A;
+
+  /* Borders - sharp single-pixel lines */
+  --border: #333333;
+  --border-bright: #666666;
+  --input: #333333;
+  --ring: #FF4F00;
+
+  /* Destructive - red alert */
+  --destructive: #660000;
+
+  /* Popover */
+  --popover: #0A0A0A;
+  --popover-foreground: #E8E8E8;
+
+  /* Sidebar */
+  --sidebar: #000000;
+  --sidebar-foreground: #E8E8E8;
+  --sidebar-primary: #FF4F00;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #1A1A1A;
+  --sidebar-accent-foreground: #E8E8E8;
+  --sidebar-border: #333333;
+  --sidebar-ring: #FF4F00;
+
   color-scheme: dark;
+}
+
+:root.light {
+  /* Light mode - high contrast engineering theme */
+  --radius: 0rem;
+
+  /* White background */
+  --background: #FFFFFF;
+  --foreground: #1A1A1A;
+
+  /* Card surfaces - light gray */
+  --card: #F5F5F5;
+  --card-foreground: #1A1A1A;
+
+  /* Primary accent - darker orange for better contrast */
+  --primary: #E64500;
+  --primary-foreground: #FFFFFF;
+
+  /* Secondary orange */
+  --secondary: #FF6B35;
+  --secondary-foreground: #FFFFFF;
+
+  /* Tertiary accent */
+  --accent: #CC3F00;
+  --accent-foreground: #FFFFFF;
+
+  /* Grayscale hierarchy */
+  --muted: #E8E8E8;
+  --muted-foreground: #666666;
+
+  /* Spec text */
+  --spec-text: #999999;
+
+  /* Borders - visible but not harsh */
+  --border: #CCCCCC;
+  --border-bright: #999999;
+  --input: #CCCCCC;
+  --ring: #E64500;
+
+  /* Destructive */
+  --destructive: #CC0000;
+
+  /* Popover */
+  --popover: #FFFFFF;
+  --popover-foreground: #1A1A1A;
+
+  /* Sidebar */
+  --sidebar: #F5F5F5;
+  --sidebar-foreground: #1A1A1A;
+  --sidebar-primary: #E64500;
+  --sidebar-primary-foreground: #FFFFFF;
+  --sidebar-accent: #E8E8E8;
+  --sidebar-accent-foreground: #1A1A1A;
+  --sidebar-border: #CCCCCC;
+  --sidebar-ring: #E64500;
+
+  color-scheme: light;
 }
 
 html,
@@ -38,49 +122,133 @@ body {
 }
 
 body {
-  font-feature-settings: "ss03", "cv02";
-  background: radial-gradient(circle at 20% -10%, rgb(82 80 192 / 35%), transparent 45%),
-    radial-gradient(circle at 100% 10%, rgb(209 110 139 / 25%), transparent 55%),
-    radial-gradient(circle at 30% 80%, rgb(46 142 179 / 20%), transparent 60%),
-    linear-gradient(160deg, rgb(9 9 20), rgb(8 8 18));
+  font-feature-settings: "tnum", "zero"; /* Tabular numbers, slashed zero */
+  font-variant-numeric: tabular-nums slashed-zero;
+  background: #000000; /* Pure black - no gradients */
   color: var(--foreground);
+  font-family: var(--font-mono), "IBM Plex Mono", "JetBrains Mono", monospace;
+  letter-spacing: -0.01em;
 }
 
-:root[data-font-scale="sm"] body {
-  font-size: 0.95rem;
+/* Force sharp corners on all form elements */
+input,
+textarea,
+select,
+button {
+  border-radius: 0 !important;
 }
 
-:root[data-font-scale="md"] body {
-  font-size: 1rem;
+/* React Day Picker - Force proper table layout */
+.rdp {
+  --rdp-cell-size: 2.5rem;
 }
 
-:root[data-font-scale="lg"] body {
-  font-size: 1.08rem;
+.rdp-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.rdp-head_cell,
+.rdp-cell {
+  width: 14.28%; /* 100% / 7 days */
+  text-align: center;
+  padding: 0.25rem;
+}
+
+.rdp-day {
+  width: 100%;
+  height: 2rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-family: var(--font-mono);
+}
+
+/* Today highlighting */
+.rdp-day_today {
+  background-color: var(--primary) !important;
+  color: var(--background) !important;
+  font-weight: 700 !important;
+  border: 1px solid var(--primary) !important;
+}
+
+.rdp-day_today:hover {
+  background-color: var(--secondary) !important;
+}
+
+.rdp-day_selected:not(.rdp-day_today) {
+  background-color: var(--muted) !important;
+  color: var(--foreground) !important;
+}
+
+.rdp-day_outside {
+  opacity: 0.4;
+}
+
+.rdp-button {
+  border-radius: 0 !important;
 }
 
 a {
-  @apply text-accent transition-colors hover:text-accent;
+  @apply text-primary transition-none hover:text-secondary;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.1s linear;
+}
+
+a:hover {
+  border-bottom-color: currentColor;
 }
 
 main {
   @apply flex-1 w-full;
 }
 
-
+/* Technical panel styling - sharp rectilinear, no blur, no shadows */
 .glass-surface {
-  background: rgba(14, 15, 30, 0.85);
-  border: 1px solid rgba(110, 120, 150, 0.25);
-  border-radius: 1.5rem;
-  backdrop-filter: blur(16px);
-  box-shadow: 0 25px 45px -20px rgba(20, 20, 55, 0.7);
+  background: #0A0A0A;
+  border: 1px solid #333333;
+  border-radius: 0;
+  backdrop-filter: none;
+  box-shadow: none;
 }
 
 .glass-section {
-  background: rgba(18, 20, 38, 0.8);
-  border: 1px solid rgba(110, 120, 150, 0.2);
-  border-radius: 1.25rem;
-  backdrop-filter: blur(14px);
+  background: #000000;
+  border: 1px solid #333333;
+  border-radius: 0;
+  backdrop-filter: none;
   padding: 1.5rem;
+}
+
+/* Technical panel variations */
+.tech-panel-primary {
+  border-color: var(--primary);
+  border-width: 1px;
+}
+
+.tech-panel-secondary {
+  border-color: var(--secondary);
+  border-width: 1px;
+}
+
+.spec-label {
+  font-size: 0.625rem; /* 10px - tiny spec text */
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--spec-text);
+  font-weight: 400;
+}
+
+.module-code {
+  font-size: 2.5rem;
+  letter-spacing: 0.02em;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary);
+  font-variant-numeric: tabular-nums;
 }
 
 .katex-display {
@@ -89,55 +257,304 @@ main {
 }
 
 .markdown-content h2 {
-  @apply text-2xl font-semibold mt-6 mb-3 tracking-tight;
+  @apply text-xl font-bold mt-6 mb-3 tracking-wide uppercase;
+  color: var(--primary);
+  font-size: 0.875rem;
+  letter-spacing: 0.1em;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 0.5rem;
 }
 
 .markdown-content h3 {
-  @apply text-xl font-semibold mt-4 mb-2;
+  @apply text-base font-bold mt-4 mb-2 uppercase;
+  color: var(--foreground);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
 }
 
 .markdown-content {
-  hyphens: auto;
-  word-break: break-word;
+  hyphens: none;
+  word-break: normal;
+  font-variant-numeric: tabular-nums;
 }
 
 .markdown-content p {
-  @apply leading-relaxed mb-4 text-muted-foreground;
+  @apply leading-relaxed mb-4;
+  color: var(--foreground);
+  font-size: 0.875rem;
 }
 
 .markdown-content pre {
-  background: rgba(32, 35, 55, 0.6);
-  border: 1px solid rgba(120, 130, 155, 0.25);
-  border-radius: 1.25rem;
+  background: #0A0A0A;
+  border: 1px solid var(--border);
+  border-radius: 0;
   padding: 1rem;
-  font-size: 0.9rem;
-  font-family: var(--font-geist-mono), monospace;
+  font-size: 0.75rem;
+  font-family: "Azeret Mono", monospace;
   overflow-x: auto;
   margin-bottom: 1.5rem;
+  line-height: 1.6;
 }
 
 .markdown-content code {
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 0.85rem;
-  padding: 0.1rem 0.35rem;
-  border-radius: 0.6rem;
-  background: rgba(32, 35, 55, 0.6);
-  color: var(--accent-foreground);
+  font-family: "Azeret Mono", monospace;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.4rem;
+  border-radius: 0;
+  background: #0A0A0A;
+  border: 1px solid var(--border);
+  color: var(--primary);
 }
 
 .markdown-content ul {
-  @apply list-disc pl-6 space-y-2 mb-4 text-muted-foreground;
+  @apply pl-6 space-y-2 mb-4;
+  list-style-type: square;
+  color: var(--foreground);
 }
 
 .markdown-content ol {
-  @apply list-decimal pl-6 space-y-2 mb-4 text-muted-foreground;
+  @apply pl-6 space-y-2 mb-4;
+  color: var(--foreground);
 }
 
 .markdown-content blockquote {
-  border-left: 4px solid rgba(234, 179, 8, 0.5);
+  border-left: 2px solid var(--primary);
   padding-left: 1rem;
-  font-style: italic;
-  color: rgba(188, 203, 223, 0.85);
+  font-style: normal;
+  color: var(--muted-foreground);
+  background: #0A0A0A;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+/* FullCalendar overrides - sharp rectilinear design */
+.fc {
+  font-family: var(--font-mono), "IBM Plex Mono", "JetBrains Mono", monospace !important;
+  background: transparent !important;
+}
+
+.fc-view-harness,
+.fc-view,
+.fc-daygrid,
+.fc-timegrid,
+.fc-scrollgrid-sync-table {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Button styling - force sharp rectilinear design */
+.fc .fc-button,
+.fc .fc-button-primary,
+.fc .fc-button-group > .fc-button {
+  border-radius: 0 !important;
+  border: 1px solid var(--border) !important;
+  background: var(--card) !important;
+  background-color: var(--card) !important;
+  color: var(--foreground) !important;
+  text-transform: uppercase !important;
+  font-size: 0.65rem !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.4rem 0.8rem !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  transition: all 0.1s linear !important;
+  height: auto !important;
+  line-height: 1.2 !important;
+}
+
+.fc .fc-button:hover,
+.fc .fc-button-primary:hover {
+  background: var(--muted) !important;
+  background-color: var(--muted) !important;
+  border-color: #666666 !important;
+  color: var(--foreground) !important;
+}
+
+.fc .fc-button:focus,
+.fc .fc-button-primary:focus {
+  box-shadow: none !important;
+  outline: 1px solid var(--primary) !important;
+  outline-offset: 2px !important;
+}
+
+.fc .fc-button:disabled,
+.fc .fc-button-primary:disabled {
+  opacity: 0.4 !important;
+  background: var(--card) !important;
+  background-color: var(--card) !important;
+}
+
+.fc .fc-button-active,
+.fc .fc-button-primary:not(:disabled).fc-button-active,
+.fc .fc-button-primary:not(:disabled):active {
+  background: var(--primary) !important;
+  background-color: var(--primary) !important;
+  border-color: var(--primary) !important;
+  color: var(--background) !important;
+}
+
+.fc .fc-button-active:hover {
+  background: var(--secondary) !important;
+  background-color: var(--secondary) !important;
+  border-color: var(--secondary) !important;
+  color: var(--background) !important;
+}
+
+/* Toolbar title */
+.fc .fc-toolbar-title {
+  font-size: 0.875rem !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.1em !important;
+  font-weight: 700 !important;
+  color: var(--foreground) !important;
+  line-height: 1.2 !important;
+}
+
+.fc .fc-toolbar {
+  margin-bottom: 1rem !important;
+}
+
+.fc .fc-toolbar-chunk {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+}
+
+/* Grid borders */
+.fc-theme-standard td,
+.fc-theme-standard th,
+.fc-theme-standard .fc-scrollgrid,
+.fc .fc-scrollgrid,
+.fc table {
+  border-color: var(--border) !important;
+  border-radius: 0 !important;
+}
+
+.fc-theme-standard .fc-scrollgrid {
+  border-width: 1px !important;
+}
+
+/* Day numbers and headers */
+.fc .fc-daygrid-day-number {
+  color: var(--foreground) !important;
+  text-decoration: none !important;
+  font-size: 0.7rem !important;
+  font-weight: 500 !important;
+  padding: 0.25rem !important;
+}
+
+.fc .fc-col-header-cell-cushion {
+  color: var(--muted-foreground) !important;
+  text-decoration: none !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  font-size: 0.6rem !important;
+  font-weight: 600 !important;
+  padding: 0.5rem 0.25rem !important;
+}
+
+/* Day cells */
+.fc .fc-daygrid-day-frame {
+  padding: 0.25rem !important;
+  background: transparent !important;
+}
+
+.fc .fc-daygrid-day,
+.fc .fc-daygrid-day-bg,
+.fc-day,
+.fc-daygrid-day-top {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+.fc .fc-day-past {
+  opacity: 0.6;
+}
+
+.fc .fc-day-future {
+  opacity: 1;
+}
+
+/* Table backgrounds */
+.fc-scrollgrid,
+.fc-scrollgrid-section,
+.fc-scrollgrid-section > td,
+.fc table,
+.fc tbody,
+.fc thead,
+.fc tr,
+.fc td,
+.fc th {
+  background: transparent !important;
+  background-color: transparent !important;
+}
+
+/* Today highlighting */
+.fc .fc-day-today {
+  background: rgba(255, 79, 0, 0.08) !important;
+  background-color: rgba(255, 79, 0, 0.08) !important;
+}
+
+.fc .fc-day-today .fc-daygrid-day-number {
+  color: var(--primary) !important;
+  font-weight: 700 !important;
+}
+
+/* Events */
+.fc-event,
+.fc-event-main {
+  border-radius: 0 !important;
+  border-width: 1px !important;
+  font-size: 0.65rem !important;
+  padding: 0.1rem 0.3rem !important;
+  cursor: pointer !important;
+  line-height: 1.3 !important;
+}
+
+.fc-event:hover {
+  filter: brightness(1.2);
+}
+
+.fc-daygrid-event {
+  border-radius: 0 !important;
+  margin-bottom: 2px !important;
+}
+
+.fc-daygrid-event-dot {
+  display: none !important;
+}
+
+/* Time grid (week view) */
+.fc .fc-timegrid-slot {
+  height: 3rem !important;
+}
+
+.fc .fc-timegrid-slot-label {
+  font-size: 0.65rem !important;
+  text-transform: uppercase !important;
+  color: var(--muted-foreground) !important;
+}
+
+.fc .fc-timegrid-axis-cushion {
+  text-transform: uppercase !important;
+  font-size: 0.6rem !important;
+  color: var(--muted-foreground) !important;
+}
+
+/* Remove all background images and gradients */
+.fc-button,
+.fc-button-primary {
+  background-image: none !important;
+}
+
+/* More specific selectors for stubborn default styles */
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  border-left: 1px solid var(--border) !important;
+  margin-left: -1px !important;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+  border-right: 1px solid var(--border) !important;
 }
 
 @media (print) {
@@ -154,17 +571,86 @@ main {
   .print-safe {
     box-shadow: none !important;
     background: #fff !important;
-    color: inherit !important;
+    color: #000 !important;
   }
 
   @page {
     size: A4;
-    margin: 1.6cm;
+    margin: 15mm;
   }
 
+  /* Headers */
   h1,
   h2,
-  h3 {
+  h3,
+  h4,
+  h5,
+  h6 {
     color: #111827 !important;
+    page-break-after: avoid;
+    break-after: avoid;
+  }
+
+  /* Paragraphs and lists */
+  p,
+  li {
+    color: #1f2937 !important;
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Code blocks */
+  pre,
+  code {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    background: #f3f4f6 !important;
+    color: #1f2937 !important;
+    border: 1px solid #d1d5db !important;
+  }
+
+  /* Tables */
+  table {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* Images */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  /* KaTeX formulas */
+  .katex-display {
+    page-break-inside: avoid;
+    break-inside: avoid;
+    overflow-x: auto;
+  }
+
+  /* Remove backgrounds and borders from cards */
+  [class*="border-border"] {
+    border-color: #d1d5db !important;
+  }
+
+  [class*="bg-card"],
+  [class*="bg-muted"] {
+    background: #fff !important;
+  }
+
+  /* Links */
+  a {
+    color: #1f2937 !important;
+    text-decoration: underline;
   }
 }

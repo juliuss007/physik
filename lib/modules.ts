@@ -10,22 +10,22 @@ export const MODULES: ModuleDefinition[] = [
   {
     slug: "experimentalphysik-1",
     name: "Experimentalphysik I · Mechanik",
-    color: "#74c0fc"
+    color: "#000066" // BLUE
   },
   {
     slug: "mathe-physiker-1",
     name: "Mathematik für Physiker I",
-    color: "#ffd43b"
+    color: "#FFBF00" // YELLOW
   },
   {
     slug: "praktikum-exp-1",
     name: "Praktikum Experimentalphysik I",
-    color: "#ffa94d"
+    color: "#660000" // RED
   },
   {
     slug: "einfuehrungspraktikum",
     name: "Einführungspraktikum Physik",
-    color: "#63e6be"
+    color: "#006666" // CYAN
   }
 ];
 

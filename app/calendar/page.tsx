@@ -1,18 +1,17 @@
 import { CalendarView } from "@/components/CalendarView";
-import { GlassCard } from "@/components/GlassCard";
 
 export default function CalendarPage() {
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground">Kalender & Termine</h2>
-        <p className="text-sm text-muted-foreground">
-          Plane Prüfungen, Praktika und Deadlines. Ereignisse werden automatisch im Dashboard hervorgehoben.
+    <div className="space-y-4">
+      <div className="border border-border p-4">
+        <h2 className="text-sm font-bold tracking-widest uppercase text-foreground">KALENDER</h2>
+        <p className="spec-label !text-muted-foreground mt-1">
+          PRÜFUNGEN · PRAKTIKA · DEADLINES
         </p>
-      </header>
-      <GlassCard>
+      </div>
+      <div className="border border-border bg-card p-6">
         <CalendarView />
-      </GlassCard>
+      </div>
     </div>
   );
 }

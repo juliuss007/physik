@@ -20,6 +20,11 @@ function NotesPageInner() {
   const [query, setQuery] = useState("");
   const [moduleFilter, setModuleFilter] = useState<ModuleSlug | null>(null);
   const [tagFilter, setTagFilter] = useState<string>("");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const moduleFromQuery = params.get("module") as ModuleSlug | null;
@@ -35,72 +40,71 @@ function NotesPageInner() {
   }, [notes, moduleFilter, tagFilter, query]);
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[260px,1fr]">
+    <div className="grid gap-6 lg:grid-cols-[240px,1fr]">
       <ModuleSidebar selected={moduleFilter} onSelect={setModuleFilter} />
-      <div className="space-y-6">
-        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-1">
-            <h2 className="text-3xl font-semibold tracking-tight text-foreground">Notizarchiv</h2>
-            <p className="text-sm text-muted-foreground">Filtern, strukturieren und bearbeiten Sie Ihre Vorlesungsnotizen.</p>
+      <div className="space-y-4">
+        <div className="border border-border p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div>
+              <h2 className="text-sm font-bold tracking-widest uppercase text-foreground">NOTIZEN</h2>
+              <p className="spec-label !text-muted-foreground mt-1">ARCHIV & VERWALTUNG</p>
+            </div>
+            <button
+              type="button"
+              onClick={() => router.push("/admin")}
+              className="spec-label transition-opacity hover:opacity-70 cursor-pointer"
+            >
+              [ADMIN →]
+            </button>
           </div>
-          <button
-            type="button"
-            onClick={() => router.push("/admin")}
-            className="inline-flex items-center gap-2 rounded-full border border-border/40 px-4 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Adminansicht
-            <ArrowUpRight className="h-3 w-3" aria-hidden />
-          </button>
-        </div>
-        <div className="flex flex-col gap-4 rounded-3xl border border-border/30 bg-card/40 p-4 backdrop-blur lg:flex-row lg:items-center">
-          <div className="flex w-full flex-1 items-center gap-3">
-            <Filter className="hidden h-4 w-4 text-muted-foreground lg:block" aria-hidden />
-            <SearchBar value={query} onChange={setQuery} />
+          <div className="flex flex-col gap-3 lg:flex-row">
+            <div className="flex-1">
+              <SearchBar value={query} onChange={setQuery} />
+            </div>
+            <input
+              value={tagFilter}
+              onChange={(event) => setTagFilter(event.target.value)}
+              placeholder="TAGS (KOMMA GETRENNT)"
+              aria-label="Tag-Filter"
+              className="h-10 border border-border bg-card px-3 text-[0.7rem] text-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none uppercase tracking-wider"
+            />
           </div>
-          <input
-            value={tagFilter}
-            onChange={(event) => setTagFilter(event.target.value)}
-            placeholder="Tags filtern (Kommagetrennt)"
-            aria-label="Tag-Filter"
-            className="h-12 w-full rounded-full border border-border/40 bg-transparent px-4 text-sm text-muted-foreground placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
-          />
         </div>
         {filteredNotes.length === 0 ? (
-          <GlassCard title="Keine Notizen gefunden" description="Passe deine Filter oder Suche an." />
+          <div className="border border-border p-8 text-center">
+            <p className="spec-label !text-muted-foreground">KEINE NOTIZEN GEFUNDEN</p>
+          </div>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
             {filteredNotes.map((note) => (
               <article
                 key={note.id}
-                className="relative flex h-full flex-col gap-4 rounded-3xl border border-border/30 bg-card/40 p-5 shadow-inner backdrop-blur"
+                className="border border-border bg-card p-4 transition-opacity hover:opacity-70 cursor-pointer"
               >
-                <header className="space-y-2">
-                  <Link href={`/notes/${note.id}`} className="text-lg font-semibold tracking-tight text-foreground">
-                    {note.title}
-                  </Link>
-                  <ModuleBadge module={note.module} />
-                  <p className="text-xs text-muted-foreground">
-                    {formatDate(note.updatedAt)} · {formatTime(note.updatedAt)}
-                  </p>
-                </header>
-                <p className="text-sm text-muted-foreground">
-                  {note.content.slice(0, 160) || "Noch kein Inhalt vorhanden."}
-                </p>
-                {note.tags.length > 0 && (
-                  <footer className="mt-auto flex flex-wrap gap-2 text-xs text-primary/80">
-                    {note.tags.map((tag) => (
-                      <span key={tag} className="rounded-full border border-primary/40 bg-primary/10 px-2 py-1">
-                        #{tag}
+                <Link href={`/notes/${note.id}`} className="block space-y-3">
+                  <header>
+                    <h3 className="text-sm font-bold tracking-wide uppercase text-foreground mb-2">
+                      {note.title}
+                    </h3>
+                    <div className="flex items-center gap-3 mb-2">
+                      <ModuleBadge module={note.module} />
+                      <span className="spec-label font-mono" suppressHydrationWarning>
+                        {mounted && `${formatDate(note.updatedAt)} · ${formatTime(note.updatedAt)}`}
                       </span>
-                    ))}
-                  </footer>
-                )}
-                <Link
-                  href={`/notes/${note.id}`}
-                  className="mt-2 inline-flex w-fit items-center gap-1 text-xs text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Öffnen
-                  <ArrowUpRight className="h-3 w-3" aria-hidden />
+                    </div>
+                  </header>
+                  <p className="text-[0.7rem] text-muted-foreground line-clamp-3">
+                    {note.content.slice(0, 160) || "Noch kein Inhalt vorhanden."}
+                  </p>
+                  {note.tags.length > 0 && (
+                    <footer className="flex flex-wrap gap-2">
+                      {note.tags.map((tag) => (
+                        <span key={tag} className="spec-label border border-border px-2 py-0.5">
+                          #{tag}
+                        </span>
+                      ))}
+                    </footer>
+                  )}
                 </Link>
               </article>
             ))}

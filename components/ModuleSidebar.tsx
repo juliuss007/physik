@@ -11,20 +11,20 @@ interface ModuleSidebarProps {
 
 export function ModuleSidebar({ selected, onSelect }: ModuleSidebarProps) {
   return (
-    <aside className="rounded-3xl border border-border/40 bg-card/40 p-4 backdrop-blur-xl">
-      <h2 className="mb-4 text-xs font-semibold uppercase tracking-[0.3em] text-muted-foreground">Vorlesungen</h2>
-      <nav className="flex flex-col gap-1.5" aria-label="Modulfilter">
+    <aside className="border border-border bg-card">
+      <div className="border-b border-border p-3">
+        <h2 className="spec-label">FILTER</h2>
+      </div>
+      <nav className="divide-y divide-border" aria-label="Modulfilter">
         <button
           type="button"
           onClick={() => onSelect(null)}
           className={cn(
-            "rounded-2xl px-4 py-2 text-left text-sm transition-colors",
-            selected === null
-              ? "bg-primary/10 text-primary shadow-glow"
-              : "bg-transparent text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+            "w-full px-4 py-3 text-left text-[0.7rem] uppercase tracking-wider font-bold text-muted-foreground transition-opacity hover:opacity-70 cursor-pointer",
+            selected === null && "border-l-2 border-l-primary"
           )}
         >
-          Alle Notizen
+          ALLE
         </button>
         {MODULES.map((module) => (
           <button
@@ -32,20 +32,11 @@ export function ModuleSidebar({ selected, onSelect }: ModuleSidebarProps) {
             type="button"
             onClick={() => onSelect(module.slug)}
             className={cn(
-              "rounded-2xl px-4 py-2 text-left text-sm transition-colors",
-              selected === module.slug
-                ? "bg-primary/10 text-primary shadow-glow"
-                : "bg-transparent text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+              "w-full px-4 py-3 text-left text-[0.7rem] uppercase tracking-wider font-bold text-muted-foreground transition-opacity hover:opacity-70 cursor-pointer",
+              selected === module.slug && "border-l-2 border-l-primary"
             )}
           >
-            <span className="flex items-center gap-3">
-              <span
-                className="h-2.5 w-2.5 rounded-full"
-                style={{ backgroundColor: module.color }}
-                aria-hidden
-              />
-              {module.name}
-            </span>
+            {module.name}
           </button>
         ))}
       </nav>

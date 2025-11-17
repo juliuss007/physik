@@ -16,7 +16,7 @@ const DialogOverlay = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
     <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
-        "fixed inset-0 z-40 bg-slate-950/70 backdrop-blur-sm data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
+        "fixed inset-0 z-40 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in",
         className
       )}
       {...props}
@@ -32,7 +32,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
       <DialogPrimitive.Content
         ref={ref}
         className={cn(
-          "fixed z-50 grid w-full max-w-lg gap-4 rounded-2xl border border-border/80 bg-surface/90 p-6 shadow-glass backdrop-blur-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
+          "fixed z-50 grid w-full max-w-lg gap-4 border border-border bg-card p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
           className
         )}
         {...props}
@@ -43,7 +43,7 @@ const DialogContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
             aria-label="Dialog schließen"
             variant="ghost"
             size="icon"
-            className="absolute right-3 top-3 h-8 w-8 rounded-full"
+            className="absolute right-3 top-3 h-8 w-8"
           >
             ×
           </Button>
@@ -69,7 +69,7 @@ const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
 >(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description ref={ref} className={cn("text-sm text-slate-300", className)} {...props} />
+  <DialogPrimitive.Description ref={ref} className={cn("text-sm text-muted-foreground", className)} {...props} />
 ));
 DialogDescription.displayName = DialogPrimitive.Description.displayName;
 

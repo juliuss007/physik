@@ -18,18 +18,18 @@
 
 @layer utilities {
   .glass {
-    border-radius: 1.5rem;
-    border: 1px solid rgba(110, 120, 150, 0.25);
-    background: rgba(14, 15, 30, 0.85);
-    backdrop-filter: blur(16px);
-    box-shadow: 0 25px 45px -20px rgba(20, 20, 55, 0.7);
+    border-radius: 0;
+    border: 1px solid #333333;
+    background: #0A0A0A;
+    backdrop-filter: none;
+    box-shadow: none;
   }
 
   .glass-muted {
-    border-radius: 1.5rem;
-    border: 1px solid rgba(110, 120, 150, 0.2);
-    background: rgba(18, 20, 38, 0.7);
-    backdrop-filter: blur(12px);
-    box-shadow: inset 0 0 0 1px rgba(140, 150, 180, 0.06);
+    border-radius: 0;
+    border: 1px solid #333333;
+    background: #000000;
+    backdrop-filter: none;
+    box-shadow: none;
   }
 }

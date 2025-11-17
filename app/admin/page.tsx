@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { ArrowRight, Download, FilePlus2, Import, Trash2 } from "lucide-react";
+import { ArrowRight, CalendarDays, Download, FilePlus2, Import, Trash2 } from "lucide-react";
 
 import { GlassCard } from "@/components/GlassCard";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/lib/notes";
 import { useCalendar } from "@/lib/calendar";
-import { downloadJson, readFileAsJson } from "@/lib/storage";
+import { buildCalendarICS } from "@/lib/calendar/ics";
+import { downloadJson, downloadTextFile, readFileAsJson } from "@/lib/storage";
 import type { CalendarEvent, Note } from "@/types/app";
 
 export default function AdminPage() {
@@ -52,6 +53,11 @@ export default function AdminPage() {
     downloadJson("events-backup.json", events);
   };
 
+  const handleExportEventsIcs = () => {
+    const ics = buildCalendarICS(events, { calendarName: "Physik Kalender" });
+    downloadTextFile("termine.ics", ics, "text/calendar");
+  };
+
   const handleImportNotes = async (file: File) => {
     const imported = await readFileAsJson<Note[]>(file);
     importNotes(imported);
@@ -65,9 +71,9 @@ export default function AdminPage() {
   const renderImport = (id: string, label: string, onFile: (file: File) => Promise<void>) => (
     <label
       htmlFor={id}
-      className="flex w-full cursor-pointer items-center gap-2 rounded-full border border-border/40 bg-card/40 px-4 py-2 text-sm text-muted-foreground hover:text-foreground"
+      className="flex cursor-pointer items-center gap-2 border border-border bg-card px-4 py-2.5 text-[0.7rem] uppercase tracking-wider font-bold text-muted-foreground transition-opacity hover:opacity-70"
     >
-      <Import className="h-4 w-4" aria-hidden />
+      <Import className="h-3.5 w-3.5" aria-hidden />
       {label}
       <input
         id={id}
@@ -84,69 +90,72 @@ export default function AdminPage() {
   );
 
   return (
-    <div className="space-y-6">
-      <header className="space-y-1">
-        <h2 className="text-3xl font-semibold tracking-tight text-foreground">Admin · Notizverwaltung</h2>
-        <p className="text-sm text-muted-foreground">
-          Erstelle, dupliziere oder verwalte Notizen und sichere vollständige Backups.
+    <div className="space-y-4">
+      <div className="border border-border p-4">
+        <h2 className="text-sm font-bold tracking-widest uppercase text-foreground">ADMIN</h2>
+        <p className="spec-label !text-muted-foreground mt-1">
+          NOTIZEN & DATENVERWALTUNG
         </p>
-      </header>
+      </div>
 
-      <GlassCard title="Werkzeuge" description="Direkte Aktionen für Notizen und Kalender">
-        <div className="flex flex-wrap gap-3">
-          <Button onClick={handleCreate} className="gap-2">
-            <FilePlus2 className="h-4 w-4" aria-hidden /> Neue Notiz
+      <GlassCard title="WERKZEUGE" description="AKTIONEN FÜR NOTIZEN UND KALENDER">
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={handleCreate}>
+            NEUE NOTIZ
           </Button>
-          <Button onClick={handleExport} variant="outline" className="gap-2">
-            <Download className="h-4 w-4" aria-hidden /> Notizen exportieren
+          <Button onClick={handleExport} variant="outline">
+            NOTIZEN EXPORTIEREN
           </Button>
-          <Button onClick={handleExportEvents} variant="outline" className="gap-2">
-            <Download className="h-4 w-4" aria-hidden /> Termine exportieren
+          <Button onClick={handleExportEvents} variant="outline">
+            TERMINE EXPORTIEREN
           </Button>
-          {renderImport("notes-import", "Notizen importieren", handleImportNotes)}
-          {renderImport("events-import", "Termine importieren", handleImportEvents)}
+          <Button onClick={handleExportEventsIcs} variant="outline">
+            iCal (.ics)
+          </Button>
+          {renderImport("notes-import", "NOTIZEN IMPORTIEREN", handleImportNotes)}
+          {renderImport("events-import", "TERMINE IMPORTIEREN", handleImportEvents)}
         </div>
       </GlassCard>
 
-      <GlassCard title="Alle Notizen" description="Schnelle Verwaltung pro Eintrag">
+      <GlassCard title="ALLE NOTIZEN" description="VERWALTUNG & BEARBEITUNG">
         {notes.length === 0 ? (
-          <p className="text-sm text-muted-foreground">Noch keine Notizen vorhanden.</p>
+          <div className="border border-border p-6 text-center">
+            <p className="spec-label !text-muted-foreground">KEINE NOTIZEN</p>
+          </div>
         ) : (
-          <ul className="space-y-3">
+          <div className="border border-border divide-y divide-border">
             {notes.map((note) => (
-              <li
+              <div
                 key={note.id}
-                className="flex flex-wrap items-center justify-between gap-3 rounded-3xl border border-border/30 bg-card/40 p-4 backdrop-blur"
+                className="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-muted/10 transition-colors"
               >
                 <div className="space-y-1">
-                  <Link href={`/notes/${note.id}`} className="text-base font-semibold tracking-tight">
+                  <Link href={`/notes/${note.id}`} className="text-sm font-bold uppercase tracking-wide text-foreground hover:text-foreground/80">
                     {note.title}
                   </Link>
-                  <p className="text-xs text-muted-foreground">{note.module}</p>
+                  <p className="spec-label">{note.module}</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <Button asChild variant="ghost" size="sm">
                     <Link href={`/notes/${note.id}`}>
-                      Öffnen
-                      <ArrowRight className="ml-1 h-3 w-3" aria-hidden />
+                      ÖFFNEN
                     </Link>
                   </Button>
                   <Button variant="ghost" size="sm" onClick={() => handleDuplicate(note.id)}>
-                    Duplizieren
+                    DUPLIZIEREN
                   </Button>
                   <Button
                     variant="destructive"
                     size="sm"
-                    className="gap-1"
                     onClick={() => handleDelete(note.id)}
                     disabled={isDeleting === note.id}
                   >
-                    <Trash2 className="h-3 w-3" aria-hidden /> Löschen
+                    LÖSCHEN
                   </Button>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </GlassCard>
     </div>

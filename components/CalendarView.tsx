@@ -84,8 +84,8 @@ export function CalendarView() {
         end: event.end,
         allDay: event.allDay,
         extendedProps: event,
-        backgroundColor: event.kind === "exam" ? "#8b5cf6" : "#22d3ee",
-        borderColor: event.kind === "exam" ? "#c084fc" : "#22d3ee",
+        backgroundColor: event.kind === "exam" ? "#00A645" : "#660066", // GREEN for exams, MAGENTA for special
+        borderColor: event.kind === "exam" ? "#00A645" : "#660066",
         className: `fc-${event.kind}-event`
       })),
     [events]
@@ -93,7 +93,7 @@ export function CalendarView() {
 
   if (!stylesLoaded) {
     return (
-      <div className="glass p-6 text-sm text-slate-300">
+      <div className="border border-border bg-card p-6 text-sm text-muted-foreground">
         Kalender wird geladen …
       </div>
     );
@@ -149,7 +149,7 @@ export function CalendarView() {
           Ereignis hinzufügen
         </Button>
       </div>
-      <div className="glass p-4">
+      <div className="border border-border bg-card p-4">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="dayGridMonth"
@@ -182,16 +182,16 @@ export function CalendarView() {
           }}
         />
       </div>
-      <legend className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
+      <legend className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded" style={{ backgroundColor: "#8b5cf6" }} /> Prüfung
+          <span className="h-3 w-3" style={{ backgroundColor: "#00A645" }} /> Prüfung
         </span>
         <span className="flex items-center gap-2">
-          <span className="h-3 w-3 rounded" style={{ backgroundColor: "#22d3ee" }} /> Sondertermin
+          <span className="h-3 w-3" style={{ backgroundColor: "#660066" }} /> Sondertermin
         </span>
         {TIMETABLE_DATA.map((entry) => (
           <span key={entry.title} className="flex items-center gap-2">
-            <span className="h-3 w-3 rounded" style={{ backgroundColor: MODULE_COLOR_MAP[entry.module] }} />
+            <span className="h-3 w-3" style={{ backgroundColor: MODULE_COLOR_MAP[entry.module] }} />
             {MODULE_NAME_MAP[entry.module]}
           </span>
         ))}

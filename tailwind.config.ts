@@ -39,20 +39,26 @@ const config: Config = {
         "sidebar-ring": "var(--sidebar-ring)"
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 4px)",
-        sm: "calc(var(--radius) - 6px)"
+        lg: "0",
+        md: "0",
+        sm: "0",
+        none: "0"
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-        mono: ["JetBrains Mono", "SFMono-Regular", "Menlo", "monospace"]
+        sans: ["Azeret Mono", "IBM Plex Mono", "JetBrains Mono", "SF Mono", "Menlo", "monospace"],
+        mono: ["Azeret Mono", "IBM Plex Mono", "JetBrains Mono", "SF Mono", "Menlo", "monospace"]
       },
       boxShadow: {
-        glow: "0 25px 45px -20px rgba(20, 20, 55, 0.7)",
-        glass: "0 18px 50px -20px rgba(8, 12, 39, 0.65)"
+        none: "none",
+        glow: "none",
+        glass: "none"
       },
       backgroundImage: {
-        noise: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0) 70%)"
+        scanline: "repeating-linear-gradient(0deg, rgba(255,79,0,0.03) 0px, rgba(255,79,0,0.03) 1px, transparent 1px, transparent 2px)"
+      },
+      spacing: {
+        '18': '4.5rem',
+        '22': '5.5rem'
       }
     }
   },

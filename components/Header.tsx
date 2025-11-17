@@ -18,11 +18,11 @@ export function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border/60 bg-background/80 backdrop-blur-xl">
+    <header className="sticky top-0 z-30 border-b border-border bg-background">
       <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Physik</p>
-          <h1 className="text-2xl font-semibold text-slate-100">Notiz- & Prüfungs-Tracker</h1>
+          <p className="spec-label">Physik</p>
+          <h1 className="text-2xl font-semibold text-foreground">Notiz- & Prüfungs-Tracker</h1>
         </div>
         <nav aria-label="Hauptnavigation" className="flex items-center gap-2">
           {navigation.map((item) => {
@@ -33,8 +33,8 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2 rounded-full border border-border/50 px-4 py-2 text-sm transition-colors",
-                  isActive ? "bg-accent/30 text-accent" : "hover:bg-surface/70"
+                  "flex items-center gap-2 border border-border px-4 py-2 text-sm transition-colors uppercase tracking-wide font-semibold",
+                  isActive ? "bg-primary text-background" : "hover:bg-muted text-foreground"
                 )}
               >
                 <Icon className="h-4 w-4" aria-hidden />

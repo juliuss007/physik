@@ -8,12 +8,12 @@ import { loadFromStorage, saveToStorage } from "@/lib/storage";
 const SETTINGS_STORAGE_KEY = "physik-settings";
 
 const DEFAULT_SETTINGS: SettingsState = {
-  fontScale: "md"
+  theme: "dark"
 };
 
 interface SettingsContextValue {
   settings: SettingsState;
-  setFontScale: (scale: SettingsState["fontScale"]) => void;
+  setTheme: (theme: SettingsState["theme"]) => void;
 }
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
@@ -28,14 +28,21 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, [settings]);
 
   useEffect(() => {
-    document.documentElement.dataset.fontScale = settings.fontScale;
-  }, [settings.fontScale]);
+    document.documentElement.dataset.theme = settings.theme;
+    if (settings.theme === "light") {
+      document.documentElement.classList.add("light");
+      document.documentElement.classList.remove("dark");
+    } else {
+      document.documentElement.classList.add("dark");
+      document.documentElement.classList.remove("light");
+    }
+  }, [settings.theme]);
 
-  const setFontScale = (scale: SettingsState["fontScale"]) => {
-    setSettings((prev) => ({ ...prev, fontScale: scale }));
+  const setTheme = (theme: SettingsState["theme"]) => {
+    setSettings((prev) => ({ ...prev, theme }));
   };
 
-  const value = useMemo(() => ({ settings, setFontScale }), [settings]);
+  const value = useMemo(() => ({ settings, setTheme }), [settings]);
 
   return <SettingsContext.Provider value={value}>{children}</SettingsContext.Provider>;
 }

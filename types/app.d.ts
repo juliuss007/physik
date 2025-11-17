@@ -35,7 +35,7 @@ export interface TimetableEntry {
 }
 
 export interface SettingsState {
-  fontScale: "sm" | "md" | "lg";
+  theme: "dark" | "light";
 }
 
 declare module "html2pdf.js";

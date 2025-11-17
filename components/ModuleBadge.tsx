@@ -1,4 +1,4 @@
-import { MODULE_COLOR_MAP, MODULE_NAME_MAP } from "@/lib/modules";
+import { MODULE_NAME_MAP } from "@/lib/modules";
 import type { ModuleSlug } from "@/types/app";
 import { cn } from "@/lib/utils";
 
@@ -11,12 +11,11 @@ export function ModuleBadge({ module, className }: ModuleBadgeProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border border-card/40 bg-card/30 px-3 py-1 text-[0.65rem] font-medium uppercase tracking-[0.3em]",
+        "inline-flex items-center gap-1.5 border border-border bg-black px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-widest text-muted-foreground",
         className
       )}
-      style={{ borderColor: MODULE_COLOR_MAP[module], color: MODULE_COLOR_MAP[module] }}
     >
-      <span className="h-2 w-2 rounded-full" style={{ backgroundColor: MODULE_COLOR_MAP[module] }} aria-hidden />
+      <span className="h-1 w-1 bg-muted-foreground" aria-hidden />
       {MODULE_NAME_MAP[module]}
     </span>
   );
