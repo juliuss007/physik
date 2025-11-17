@@ -8,7 +8,7 @@ import { NoteEditor } from "@/components/NoteEditor";
 import { NotePreview } from "@/components/NotePreview";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { Button } from "@/components/ui/button";
-import { GlassCard } from "@/components/GlassCard";
+import { Card } from "@/components/Card";
 import { useNotes } from "@/lib/notes";
 import type { Note } from "@/types/app";
 
@@ -28,7 +28,7 @@ export default function NoteDetailPage() {
 
   if (!note || !draft) {
     return (
-      <GlassCard
+      <Card
         title="Notiz nicht gefunden"
         description="Die angeforderte Notiz existiert nicht oder wurde gelöscht."
         className="mx-auto max-w-xl text-center"

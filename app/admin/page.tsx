@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { ArrowRight, CalendarDays, Download, FilePlus2, Import, Trash2 } from "lucide-react";
 
-import { GlassCard } from "@/components/GlassCard";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/lib/notes";
 import { useCalendar } from "@/lib/calendar";
@@ -98,7 +98,7 @@ export default function AdminPage() {
         </p>
       </div>
 
-      <GlassCard title="WERKZEUGE" description="AKTIONEN FÜR NOTIZEN UND KALENDER">
+      <Card title="WERKZEUGE" description="AKTIONEN FÜR NOTIZEN UND KALENDER">
         <div className="flex flex-wrap gap-2">
           <Button onClick={handleCreate}>
             NEUE NOTIZ
@@ -115,9 +115,9 @@ export default function AdminPage() {
           {renderImport("notes-import", "NOTIZEN IMPORTIEREN", handleImportNotes)}
           {renderImport("events-import", "TERMINE IMPORTIEREN", handleImportEvents)}
         </div>
-      </GlassCard>
+      </Card>
 
-      <GlassCard title="ALLE NOTIZEN" description="VERWALTUNG & BEARBEITUNG">
+      <Card title="ALLE NOTIZEN" description="VERWALTUNG & BEARBEITUNG">
         {notes.length === 0 ? (
           <div className="border border-border p-6 text-center">
             <p className="spec-label !text-muted-foreground">KEINE NOTIZEN</p>
@@ -157,7 +157,7 @@ export default function AdminPage() {
             ))}
           </div>
         )}
-      </GlassCard>
+      </Card>
     </div>
   );
 }

@@ -1,4 +1,4 @@
-// File: /Users/juliuselgeti/Desktop/Websiten/physik/app/notes/page.tsx
+// File: /Users/august/Desktop/physik/app/notes/page.tsx
 import * as entry from '../../../../app/notes/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

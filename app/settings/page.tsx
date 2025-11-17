@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Download, Upload, Type, Palette, FileDown, CalendarDays } from "lucide-react";
 
-import { GlassCard } from "@/components/GlassCard";
+import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { useNotes } from "@/lib/notes";
 import { useCalendar } from "@/lib/calendar";
@@ -101,7 +101,7 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <GlassCard
+      <Card
         title="BACKUP & RESTORE"
         description="LOKALE DATEN SICHERN UND WIEDERHERSTELLEN"
       >
@@ -124,9 +124,9 @@ export default function SettingsPage() {
             {renderFileInput("events-import", "Importieren", handleImportEvents)}
           </div>
         </div>
-      </GlassCard>
+      </Card>
 
-      <GlassCard
+      <Card
         title="DARSTELLUNG"
         description="FARBSCHEMA"
       >
@@ -143,7 +143,7 @@ export default function SettingsPage() {
             ))}
           </div>
         </div>
-      </GlassCard>
+      </Card>
 
       {(message || error) && (
         <div

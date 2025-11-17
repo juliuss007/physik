@@ -8,7 +8,7 @@ import { ArrowUpRight, Filter } from "lucide-react";
 import { ModuleSidebar } from "@/components/ModuleSidebar";
 import { SearchBar } from "@/components/SearchBar";
 import { ModuleBadge } from "@/components/ModuleBadge";
-import { GlassCard } from "@/components/GlassCard";
+import { Card } from "@/components/Card";
 import { filterNotesByModule, filterNotesByTags, searchNotes, useNotes } from "@/lib/notes";
 import { formatDate, formatTime } from "@/lib/utils";
 import type { ModuleSlug } from "@/types/app";

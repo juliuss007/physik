@@ -130,50 +130,33 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
   const safeDate = note.updatedAt.split("T")[0];
   const baseFilename = `${safeDate}-${note.title.replace(/[^a-zA-Z0-9-_]+/g, "-")}`;
 
-  // Compile to PDF using LaTeX.Online data endpoint
   try {
-    // Encode LaTeX as base64 for URL
-    const base64Content = btoa(unescape(encodeURIComponent(latexContent)));
-
-    const response = await fetch("https://latexonline.cc/data", {
+    // Compile LaTeX to PDF using our API route
+    const response = await fetch("/api/compile-latex", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        code: latexContent,
-        compile: "pdflatex",
-      }),
+      body: JSON.stringify({ latexContent }),
     });
 
     if (!response.ok) {
-      const text = await response.text();
-      throw new Error(`LaTeX compilation failed: ${response.statusText} - ${text}`);
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(errorData.details || "Compilation failed");
     }
 
-    // Check if response is actually a PDF
-    const contentType = response.headers.get("content-type");
-    if (contentType && !contentType.includes("pdf")) {
-      throw new Error("Response is not a PDF");
-    }
-
+    // Get the PDF blob
     const pdfBlob = await response.blob();
 
-    // Verify blob is not empty
-    if (pdfBlob.size === 0) {
-      throw new Error("Received empty PDF");
-    }
-
+    // Download the PDF
     const url = URL.createObjectURL(pdfBlob);
     const link = document.createElement("a");
     link.href = url;
     link.download = `${baseFilename}.pdf`;
     link.click();
-
-    // Cleanup after a short delay
-    setTimeout(() => URL.revokeObjectURL(url), 100);
+    URL.revokeObjectURL(url);
   } catch (error) {
-    console.error("PDF compilation failed, falling back to .tex download:", error);
+    console.error("PDF compilation failed:", error);
 
     // Fallback: Download .tex file
     const blob = new Blob([latexContent], { type: "text/plain;charset=utf-8" });
@@ -184,7 +167,8 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
     link.click();
     URL.revokeObjectURL(url);
 
-    // Show error to user
-    alert("PDF-Kompilierung fehlgeschlagen. .tex Datei wurde stattdessen heruntergeladen.\n\nDu kannst sie auf https://overleaf.com hochladen und kompilieren.");
+    alert(
+      `PDF-Kompilierung fehlgeschlagen.\n\nStelle sicher, dass LaTeX installiert ist:\nmacOS: brew install basictex\nLinux: sudo apt-get install texlive\n\nFallback: .tex Datei wurde heruntergeladen.`
+    );
   }
 }

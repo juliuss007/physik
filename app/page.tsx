@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowRight, CalendarDays, FileText, NotebookPen, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 
-import { GlassCard } from "@/components/GlassCard";
+import { Card } from "@/components/Card";
 import { ModuleBadge } from "@/components/ModuleBadge";
 import { MODULES } from "@/lib/modules";
 import { useNotes } from "@/lib/notes";
@@ -54,7 +54,7 @@ export default function DashboardPage() {
     <div className="space-y-6">
       {/* Main grid - module status and quick actions */}
       <section className="grid gap-4 lg:grid-cols-[1.8fr,1fr]">
-        <GlassCard
+        <Card
           title="MODULE"
           description="NOTIZEN PRO VORLESUNG"
           variant="default"
@@ -69,9 +69,9 @@ export default function DashboardPage() {
               </div>
             ))}
           </div>
-        </GlassCard>
+        </Card>
 
-        <GlassCard
+        <Card
           title="AKTIONEN"
           variant="default"
           animationDelay={0.1}
@@ -134,12 +134,12 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-        </GlassCard>
+        </Card>
       </section>
 
       {/* Recent entries and upcoming events */}
       <section className="grid gap-4 lg:grid-cols-2">
-        <GlassCard
+        <Card
           title="NOTIZEN"
           description="ZULETZT BEARBEITET"
           variant="default"
@@ -173,9 +173,9 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
-        </GlassCard>
+        </Card>
 
-        <GlassCard
+        <Card
           title="TERMINE"
           description="ANSTEHENDE DEADLINES"
           variant="default"
@@ -215,7 +215,7 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
-        </GlassCard>
+        </Card>
       </section>
     </div>
   );

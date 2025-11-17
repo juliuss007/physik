@@ -1,4 +1,4 @@
-// File: /Users/juliuselgeti/Desktop/Websiten/physik/app/api/mcp/[transport]/route.ts
+// File: /Users/august/Desktop/physik/app/api/mcp/[transport]/route.ts
 import * as entry from '../../../../../../app/api/mcp/[transport]/route.js'
 import type { NextRequest } from 'next/server.js'
 

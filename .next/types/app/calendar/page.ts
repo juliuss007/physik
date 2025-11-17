@@ -1,4 +1,4 @@
-// File: /Users/juliuselgeti/Desktop/Websiten/physik/app/calendar/page.tsx
+// File: /Users/august/Desktop/physik/app/calendar/page.tsx
 import * as entry from '../../../../app/calendar/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

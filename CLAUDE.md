@@ -180,7 +180,7 @@ app/
 components/
   ├── ui/                     # shadcn/ui primitives
   ├── layout/                 # Layout components (Shell, MiniCalendar)
-  ├── GlassCard.tsx          # Main card component with glassmorphism
+  ├── Card.tsx               # Main card component with sharp rectilinear design
   ├── NoteEditor.tsx         # Markdown editor
   ├── NotePreview.tsx        # Markdown+LaTeX preview
   ├── CalendarView.tsx       # FullCalendar integration

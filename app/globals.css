@@ -207,7 +207,7 @@ main {
 }
 
 /* Technical panel styling - sharp rectilinear, no blur, no shadows */
-.glass-surface {
+.tech-panel {
   background: #0A0A0A;
   border: 1px solid #333333;
   border-radius: 0;
@@ -215,7 +215,7 @@ main {
   box-shadow: none;
 }
 
-.glass-section {
+.tech-section {
   background: #000000;
   border: 1px solid #333333;
   border-radius: 0;

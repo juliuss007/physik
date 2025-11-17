@@ -17,7 +17,7 @@
 }
 
 @layer utilities {
-  .glass {
+  .tech-card {
     border-radius: 0;
     border: 1px solid #333333;
     background: #0A0A0A;
@@ -25,7 +25,7 @@
     box-shadow: none;
   }
 
-  .glass-muted {
+  .tech-muted {
     border-radius: 0;
     border: 1px solid #333333;
     background: #000000;
