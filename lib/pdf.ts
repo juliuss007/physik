@@ -130,45 +130,91 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
   const safeDate = note.updatedAt.split("T")[0];
   const baseFilename = `${safeDate}-${note.title.replace(/[^a-zA-Z0-9-_]+/g, "-")}`;
 
+  let pdfBlob: Blob | null = null;
+
+  // 1. Try TeXLive.net first
   try {
-    // Compile LaTeX to PDF using our API route
-    const response = await fetch("/api/compile-latex", {
+    console.log("Trying TeXLive.net...");
+    const formData = new FormData();
+    formData.append("filecontents[]", latexContent);
+    formData.append("filename[]", "main.tex");
+    formData.append("engine", "pdflatex");
+    formData.append("return", "pdf");
+
+    const response = await fetch("https://texlive.net/cgi-bin/latexcgi", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ latexContent }),
+      body: formData,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.details || "Compilation failed");
+    if (response.ok && response.headers.get("content-type")?.includes("pdf")) {
+      pdfBlob = await response.blob();
+      console.log("✓ Compiled with TeXLive.net");
     }
+  } catch (error) {
+    console.warn("TeXLive.net failed:", error);
+  }
 
-    // Get the PDF blob
-    const pdfBlob = await response.blob();
+  // 2. Try LaTeX.Online if TeXLive failed
+  if (!pdfBlob) {
+    try {
+      console.log("Trying LaTeX.Online...");
+      const response = await fetch(
+        `https://latexonline.cc/compile?text=${encodeURIComponent(latexContent)}&command=pdflatex`,
+        { method: "GET" }
+      );
 
-    // Download the PDF
+      if (response.ok && response.headers.get("content-type")?.includes("pdf")) {
+        pdfBlob = await response.blob();
+        console.log("✓ Compiled with LaTeX.Online");
+      }
+    } catch (error) {
+      console.warn("LaTeX.Online failed:", error);
+    }
+  }
+
+  // 3. Try local compilation if online services failed
+  if (!pdfBlob) {
+    try {
+      console.log("Trying local compilation...");
+      const response = await fetch("/api/compile-latex", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ latexContent }),
+      });
+
+      if (response.ok) {
+        pdfBlob = await response.blob();
+        console.log("✓ Compiled locally");
+      }
+    } catch (error) {
+      console.warn("Local compilation failed:", error);
+    }
+  }
+
+  // 4. If we have a PDF, download it
+  if (pdfBlob && pdfBlob.size > 0) {
     const url = URL.createObjectURL(pdfBlob);
     const link = document.createElement("a");
     link.href = url;
     link.download = `${baseFilename}.pdf`;
     link.click();
-    URL.revokeObjectURL(url);
-  } catch (error) {
-    console.error("PDF compilation failed:", error);
-
-    // Fallback: Download .tex file
-    const blob = new Blob([latexContent], { type: "text/plain;charset=utf-8" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${baseFilename}.tex`;
-    link.click();
-    URL.revokeObjectURL(url);
-
-    alert(
-      `PDF-Kompilierung fehlgeschlagen.\n\nStelle sicher, dass LaTeX installiert ist:\nmacOS: brew install basictex\nLinux: sudo apt-get install texlive\n\nFallback: .tex Datei wurde heruntergeladen.`
-    );
+    setTimeout(() => URL.revokeObjectURL(url), 100);
+    return;
   }
+
+  // 5. Final fallback: Download .tex file
+  console.error("All compilation methods failed");
+  const blob = new Blob([latexContent], { type: "text/plain;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `${baseFilename}.tex`;
+  link.click();
+  URL.revokeObjectURL(url);
+
+  alert(
+    `PDF-Kompilierung fehlgeschlagen.\n\nFallback: .tex Datei wurde heruntergeladen.\n\nKompiliere sie auf:\n• https://overleaf.com (Upload → Compile)\n• https://www.latex4technics.com (Paste → Compile)`
+  );
 }
