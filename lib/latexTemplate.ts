@@ -27,14 +27,11 @@ export function buildLatexDocument(body: string, title: string): string {
 \\usepackage[T1]{fontenc}
 \\usepackage[utf8]{inputenc}
 
-% Fonts - Use computer modern for monospace aesthetic
+% Fonts
 \\usepackage{lmodern}
-\\renewcommand{\\familydefault}{\\ttdefault}
 
 % Math packages
 \\usepackage{amsmath,amssymb,amsfonts}
-\\usepackage{physics}
-\\usepackage{siunitx}
 
 % Colors - Dark mode
 \\usepackage{xcolor}
@@ -46,7 +43,7 @@ export function buildLatexDocument(body: string, title: string): string {
 \\pagecolor{darkbg}
 \\color{lighttext}
 
-% Section styling - Sharp, outline-only accent
+% Section styling
 \\usepackage{titlesec}
 \\titleformat{\\section}
   {\\large\\bfseries\\color{accent}}
