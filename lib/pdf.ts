@@ -130,30 +130,48 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
   const safeDate = note.updatedAt.split("T")[0];
   const baseFilename = `${safeDate}-${note.title.replace(/[^a-zA-Z0-9-_]+/g, "-")}`;
 
-  // Compile to PDF using LaTeX.Online
+  // Compile to PDF using LaTeX.Online data endpoint
   try {
-    const response = await fetch("https://latexonline.cc/compile", {
+    // Encode LaTeX as base64 for URL
+    const base64Content = btoa(unescape(encodeURIComponent(latexContent)));
+
+    const response = await fetch("https://latexonline.cc/data", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+        "Content-Type": "application/json",
       },
-      body: new URLSearchParams({
-        text: latexContent,
-        command: "pdflatex",
+      body: JSON.stringify({
+        code: latexContent,
+        compile: "pdflatex",
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`LaTeX compilation failed: ${response.statusText}`);
+      const text = await response.text();
+      throw new Error(`LaTeX compilation failed: ${response.statusText} - ${text}`);
+    }
+
+    // Check if response is actually a PDF
+    const contentType = response.headers.get("content-type");
+    if (contentType && !contentType.includes("pdf")) {
+      throw new Error("Response is not a PDF");
     }
 
     const pdfBlob = await response.blob();
+
+    // Verify blob is not empty
+    if (pdfBlob.size === 0) {
+      throw new Error("Received empty PDF");
+    }
+
     const url = URL.createObjectURL(pdfBlob);
     const link = document.createElement("a");
     link.href = url;
     link.download = `${baseFilename}.pdf`;
     link.click();
-    URL.revokeObjectURL(url);
+
+    // Cleanup after a short delay
+    setTimeout(() => URL.revokeObjectURL(url), 100);
   } catch (error) {
     console.error("PDF compilation failed, falling back to .tex download:", error);
 
@@ -166,6 +184,7 @@ export async function exportNoteToPdf(note: Note, { containerId }: PdfOptions) {
     link.click();
     URL.revokeObjectURL(url);
 
-    throw error;
+    // Show error to user
+    alert("PDF-Kompilierung fehlgeschlagen. .tex Datei wurde stattdessen heruntergeladen.\n\nDu kannst sie auf https://overleaf.com hochladen und kompilieren.");
   }
 }
