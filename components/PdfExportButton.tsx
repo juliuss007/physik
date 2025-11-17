@@ -34,9 +34,20 @@ export function PdfExportButton({ note }: PdfExportButtonProps) {
       if (res.ok && ct.startsWith("application/pdf")) {
         const blob = await res.blob();
         const url = URL.createObjectURL(blob);
+
+        // Extract filename from Content-Disposition header
+        const contentDisposition = res.headers.get("Content-Disposition");
+        let filename = "notes.pdf";
+        if (contentDisposition) {
+          const filenameMatch = contentDisposition.match(/filename="?([^"]+)"?/);
+          if (filenameMatch) {
+            filename = filenameMatch[1];
+          }
+        }
+
         const a = document.createElement("a");
         a.href = url;
-        a.download = "notes.pdf";
+        a.download = filename;
         document.body.appendChild(a);
         a.click();
         a.remove();
