@@ -23,7 +23,7 @@ export default function NoteDetailPage() {
   useEffect(() => {
     if (note) {
       setDraft(note);
-      document.title = `Physikon - ${note.title || 'Notiz'}`;
+      document.title = `Physikonsole - ${note.title || 'Notiz'}`;
     }
   }, [note]);
 

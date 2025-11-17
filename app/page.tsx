@@ -23,7 +23,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
-    document.title = "Physikon - Übersicht";
+    document.title = "Physikonsole - Übersicht";
   }, []);
 
   const moduleNoteCount = MODULES.map((module, index) => ({

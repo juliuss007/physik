@@ -20,7 +20,7 @@ export default function AdminPage() {
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
 
   useEffect(() => {
-    document.title = "Physikon - Admin";
+    document.title = "Physikonsole - Admin";
   }, []);
 
   const handleCreate = () => {

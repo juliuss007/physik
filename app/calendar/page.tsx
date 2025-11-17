@@ -2,7 +2,7 @@ import { CalendarView } from "@/components/CalendarView";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Physikon - Kalender",
+  title: "Physikonsole - Kalender",
 };
 
 export default function CalendarPage() {
