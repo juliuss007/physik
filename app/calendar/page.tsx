@@ -1,4 +1,9 @@
 import { CalendarView } from "@/components/CalendarView";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Physikon - Kalender",
+};
 
 export default function CalendarPage() {
   return (

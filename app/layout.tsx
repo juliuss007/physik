@@ -14,7 +14,10 @@ const ibmPlexMono = IBM_Plex_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
 
-  title: "PHYSIK RESEARCH ARCHIVE",
+  title: {
+    default: "Physikon",
+    template: "%s | Physikon"
+  },
   description: "Technical documentation system for physics research and laboratory protocols",
 
   // Icons - comprehensive browser support
@@ -36,15 +39,15 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "de_DE",
-    siteName: "PHYSIK RESEARCH ARCHIVE",
-    title: "PHYSIK RESEARCH ARCHIVE",
+    siteName: "Physikon",
+    title: "Physikon",
     description: "Technical documentation system for physics research and laboratory protocols",
     images: [
       {
         url: "/ogimage.png",
         width: 1456,  // Actual dimensions of your ogimage.png
         height: 816,
-        alt: "PHYSIK RESEARCH ARCHIVE",
+        alt: "Physikon",
         type: "image/png",
       }
     ],
@@ -53,7 +56,7 @@ export const metadata: Metadata = {
   // Twitter Card
   twitter: {
     card: "summary_large_image",
-    title: "PHYSIK RESEARCH ARCHIVE",
+    title: "Physikon",
     description: "Technical documentation system for physics research and laboratory protocols",
     images: ["/ogimage.png"],
   },

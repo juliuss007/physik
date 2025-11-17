@@ -23,6 +23,7 @@ export default function DashboardPage() {
 
   useEffect(() => {
     setMounted(true);
+    document.title = "Physikon - Übersicht";
   }, []);
 
   const moduleNoteCount = MODULES.map((module, index) => ({

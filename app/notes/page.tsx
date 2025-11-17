@@ -24,6 +24,7 @@ function NotesPageInner() {
 
   useEffect(() => {
     setMounted(true);
+    document.title = "Physikon - Notizen";
   }, []);
 
   useEffect(() => {

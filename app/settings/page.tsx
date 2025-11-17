@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, Upload, Type, Palette, FileDown, CalendarDays } from "lucide-react";
 
 import { Card } from "@/components/Card";
@@ -21,6 +21,10 @@ export default function SettingsPage() {
   } = useSettings();
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.title = "Physikon - Einstellungen";
+  }, []);
 
   const handleBackupNotes = () => {
     downloadJson("notizen-backup.json", notes);

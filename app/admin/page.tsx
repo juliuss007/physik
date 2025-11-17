@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowRight, CalendarDays, Download, FilePlus2, Import, Trash2 } from "lucide-react";
 
 import { Card } from "@/components/Card";
@@ -18,6 +18,10 @@ export default function AdminPage() {
   const { notes, createNote, deleteNote, importNotes } = useNotes();
   const { events, importEvents } = useCalendar();
   const [isDeleting, setIsDeleting] = useState<string | null>(null);
+
+  useEffect(() => {
+    document.title = "Physikon - Admin";
+  }, []);
 
   const handleCreate = () => {
     const note = createNote();
