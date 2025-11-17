@@ -12,6 +12,8 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+
   title: "PHYSIK RESEARCH ARCHIVE",
   description: "Technical documentation system for physics research and laboratory protocols",
 
@@ -34,15 +36,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "de_DE",
-    url: "https://physik.vercel.app",  // Update with your actual domain
     siteName: "PHYSIK RESEARCH ARCHIVE",
     title: "PHYSIK RESEARCH ARCHIVE",
     description: "Technical documentation system for physics research and laboratory protocols",
     images: [
       {
         url: "/ogimage.png",
-        width: 1200,
-        height: 630,
+        width: 1456,  // Actual dimensions of your ogimage.png
+        height: 816,
         alt: "PHYSIK RESEARCH ARCHIVE",
         type: "image/png",
       }
