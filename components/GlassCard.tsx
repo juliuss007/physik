@@ -1,14 +1,15 @@
 "use client";
 
-import type { HTMLAttributes, ReactNode } from "react";
-import { motion } from "framer-motion";
+import type { ReactNode } from "react";
+import { motion, type HTMLMotionProps } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 
-interface GlassCardProps extends Omit<HTMLAttributes<HTMLDivElement>, "title"> {
+interface GlassCardProps extends Omit<HTMLMotionProps<"section">, "title" | "children"> {
   title?: ReactNode;
   description?: ReactNode;
   footer?: ReactNode;
+  children?: ReactNode;
   variant?: "default" | "primary";
   animationDelay?: number;
 }
