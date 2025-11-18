@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { CalendarClock } from "lucide-react";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -58,15 +58,20 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
   };
 
   const heading = isEdit ? "Termin bearbeiten" : "Neuen Termin erstellen";
+  const titleId = "event-dialog-title";
+  const descriptionId = "event-dialog-description";
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent aria-describedby="event-dialog-description" className="space-y-4">
+      <DialogContent aria-describedby={descriptionId} aria-labelledby={titleId} className="space-y-4">
         <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-foreground uppercase tracking-wide">
+          <DialogTitle id={titleId} className="flex items-center gap-2 text-foreground uppercase tracking-wide">
             <CalendarClock className="h-5 w-5 text-primary" aria-hidden />
             {heading}
           </DialogTitle>
+          <DialogDescription id={descriptionId} className="text-left">
+            Fülle die Felder aus, um einen neuen Kalendereintrag zu erstellen oder einen bestehenden Termin zu bearbeiten.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-3 text-sm">
           <div className="space-y-1">
