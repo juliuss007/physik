@@ -25,9 +25,16 @@ export const TIMETABLE_DATA: TimetableEntry[] = [
   {
     dow: 2,
     start: "10:15",
-    end: "10:45",
+    end: "11:45",
     title: "Übung Mathematik für Physiker",
     module: "mathe-physiker-1"
+  },
+  {
+    dow: 2,
+    start: "12:15",
+    end: "15:15",
+    title: "Praktikum Experimentalphysik",
+    module: "praktikum-exp-1"
   },
   {
     dow: 4,
