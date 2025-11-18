@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { IBM_Plex_Mono } from "next/font/google";
 
 import "./globals.css";
@@ -53,6 +53,9 @@ export const metadata: Metadata = {
 
   // Additional metadata
   manifest: "/site.webmanifest",  // For PWA support (optional)
+};
+
+export const viewport: Viewport = {
   themeColor: "#0a0a0a",  // Dark background color
 };
 
