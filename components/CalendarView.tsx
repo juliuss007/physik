@@ -1,11 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
+
+import "@/styles/fullcalendar.css";
 
 import { Button } from "@/components/ui/button";
 import { EventDialog } from "@/components/EventDialog";
@@ -18,42 +20,6 @@ export function CalendarView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [draftRange, setDraftRange] = useState<{ start: string; end: string } | undefined>();
-  const [stylesLoaded, setStylesLoaded] = useState(false);
-
-  useEffect(() => {
-    const loadStyles = async () => {
-      try {
-        const version = "6.1.19";
-        const urls = [
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/core@${version}/index.global.min.css`,
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@${version}/index.global.min.css`,
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@${version}/index.global.min.css`
-        ];
-
-        await Promise.all(
-          urls.map((href) => {
-            if (document.querySelector(`link[data-fc-css="${href}"]`)) {
-              return Promise.resolve();
-            }
-            return new Promise<void>((resolve, reject) => {
-              const link = document.createElement("link");
-              link.rel = "stylesheet";
-              link.href = href;
-              link.dataset.fcCss = href;
-              link.onload = () => resolve();
-              link.onerror = () => reject(new Error(`Konnte ${href} nicht laden`));
-              document.head.appendChild(link);
-            });
-          })
-        );
-      } catch (error) {
-        console.error("FullCalendar styles konnten nicht geladen werden", error);
-      } finally {
-        setStylesLoaded(true);
-      }
-    };
-    loadStyles();
-  }, []);
 
   const timetableEvents = useMemo<EventInput[]>(
     () =>
@@ -90,14 +56,6 @@ export function CalendarView() {
       })),
     [events]
   );
-
-  if (!stylesLoaded) {
-    return (
-      <div className="border border-border bg-card p-6 text-sm text-muted-foreground">
-        Kalender wird geladen …
-      </div>
-    );
-  }
 
   const handleSelect = (selection: DateSelectArg) => {
     setDraftRange({

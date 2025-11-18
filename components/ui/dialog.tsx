@@ -25,33 +25,53 @@ const DialogOverlay = React.forwardRef<HTMLDivElement, React.ComponentPropsWitho
 );
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+const matchesElementType = (child: React.ReactElement, target: React.ElementType) => {
+  if (child.type === target) return true;
+  const displayName = (child.type as { displayName?: string }).displayName;
+  return Boolean(displayName && displayName === (target as { displayName?: string }).displayName);
+};
+
 const containsType = (children: React.ReactNode, target: React.ElementType): boolean => {
   return React.Children.toArray(children).some((child) => {
     if (!React.isValidElement(child)) return false;
-    if (child.type === target) return true;
+    if (matchesElementType(child, target)) return true;
     return containsType(child.props.children, target);
   });
 };
 
 const DialogContent = React.forwardRef<HTMLDivElement, React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>>(
-  ({ className, children, ...props }, ref) => {
+  ({ className, children, "aria-labelledby": ariaLabelledBy, "aria-describedby": ariaDescribedBy, ...props }, ref) => {
+    const [fallbackTitleId] = React.useState(() => `dialog-title-${Math.random().toString(36).slice(2)}`);
+    const [fallbackDescriptionId] = React.useState(() => `dialog-description-${Math.random().toString(36).slice(2)}`);
+
     const hasTitle = containsType(children, DialogPrimitive.Title);
     const hasDescription = containsType(children, DialogPrimitive.Description);
+
+    const labelledBy = ariaLabelledBy ?? (!hasTitle ? fallbackTitleId : undefined);
+    const describedBy = ariaDescribedBy ?? (!hasDescription ? fallbackDescriptionId : undefined);
 
     return (
       <DialogPortal>
         <DialogOverlay />
         <DialogPrimitive.Content
           ref={ref}
+          aria-labelledby={labelledBy}
+          aria-describedby={describedBy}
           className={cn(
             "fixed z-50 grid w-full max-w-lg gap-4 border border-border bg-card p-6 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in data-[state=closed]:fade-out data-[state=open]:zoom-in-95 data-[state=closed]:zoom-out-95",
             className
           )}
           {...props}
         >
-          {!hasTitle && <DialogPrimitive.Title className="sr-only">Dialog</DialogPrimitive.Title>}
+          {!hasTitle && (
+            <DialogPrimitive.Title id={labelledBy} className="sr-only">
+              Dialog
+            </DialogPrimitive.Title>
+          )}
           {!hasDescription && (
-            <DialogPrimitive.Description className="sr-only">Dialoginhalt</DialogPrimitive.Description>
+            <DialogPrimitive.Description id={describedBy} className="sr-only">
+              Dialoginhalt
+            </DialogPrimitive.Description>
           )}
           {children}
           <DialogPrimitive.Close asChild>
