@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { CalendarClock } from "lucide-react";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -68,6 +68,9 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
             {heading}
           </DialogTitle>
         </DialogHeader>
+        <DialogDescription id="event-dialog-description" className="text-left">
+          Fülle die Felder aus, um einen neuen Kalendereintrag zu erstellen oder einen bestehenden Termin zu bearbeiten.
+        </DialogDescription>
         <div className="space-y-3 text-sm">
           <div className="space-y-1">
             <Label htmlFor="event-title">Titel</Label>
