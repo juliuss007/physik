@@ -31,9 +31,10 @@ declare namespace __next_route_internal_types__ {
   type StaticRoutes = 
     | `/`
     | `/api/compile-latex`
+    | `/api/notes-to-pdf`
     | `/admin`
-    | `/calendar`
     | `/notes`
+    | `/calendar`
     | `/settings`
   type DynamicRoutes<T extends string = string> = 
     | `/api/mcp/${SafeSlug<T>}`

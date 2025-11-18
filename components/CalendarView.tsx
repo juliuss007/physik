@@ -4,10 +4,8 @@ import { useMemo, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin, { DateClickArg } from "@fullcalendar/interaction";
 import type { DateSelectArg, EventClickArg, EventInput } from "@fullcalendar/core";
-
-import "@/styles/fullcalendar.css";
 
 import { Button } from "@/components/ui/button";
 import { EventDialog } from "@/components/EventDialog";
@@ -74,6 +72,17 @@ export function CalendarView() {
     setDialogOpen(true);
   };
 
+  const handleDateClick = (arg: DateClickArg) => {
+    const start = arg.date;
+    const end = new Date(arg.date.getTime() + 60 * 60 * 1000); // Default 1 hour
+    setDraftRange({
+      start: start.toISOString(),
+      end: end.toISOString()
+    });
+    setSelectedEvent(null);
+    setDialogOpen(true);
+  };
+
   const handleCreateOrUpdate = (data: Omit<CalendarEvent, "id"> & { id?: string }) => {
     if (data.id) {
       updateEvent({ ...(data as CalendarEvent) });
@@ -122,6 +131,7 @@ export function CalendarView() {
           selectable
           selectMirror
           select={handleSelect}
+          dateClick={handleDateClick}
           eventClick={handleEventClick}
           events={[...timetableEvents, ...dynamicEvents]}
           height="auto"
