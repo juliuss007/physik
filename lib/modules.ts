@@ -9,7 +9,7 @@ export interface ModuleDefinition {
 export const MODULES: ModuleDefinition[] = [
   {
     slug: "experimentalphysik-1",
-    name: "Experimentalphysik I · Mechanik",
+    name: "Experimentalphysik I – Energie – Raum – Zeit",
     color: "#000066" // BLUE
   },
   {
@@ -26,6 +26,16 @@ export const MODULES: ModuleDefinition[] = [
     slug: "einfuehrungspraktikum",
     name: "Einführungspraktikum Physik",
     color: "#006666" // CYAN
+  },
+  {
+    slug: "mathematische-methoden",
+    name: "Mathematische Methoden",
+    color: "#004B33" // DARK GREEN
+  },
+  {
+    slug: "software-tools",
+    name: "Software Tools in der Physik",
+    color: "#4B0082" // INDIGO
   }
 ];
 
