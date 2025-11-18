@@ -12,7 +12,7 @@ const ibmPlexMono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000'),
+  metadataBase: new URL('https://physik.vercel.app'),
 
   title: {
     default: "Physik Konsole",
@@ -35,30 +35,20 @@ export const metadata: Metadata = {
     ]
   },
 
-  // Open Graph
+  // Open Graph - image handled by app/opengraph-image.jpg
   openGraph: {
     type: "website",
     locale: "de_DE",
     siteName: "Physik Konsole",
     title: "Physik Konsole",
     description: "Technical documentation system for physics research and laboratory protocols",
-    images: [
-      {
-        url: "/ogimage.png",
-        width: 1456,  // Actual dimensions of your ogimage.png
-        height: 816,
-        alt: "Physik Konsole",
-        type: "image/png",
-      }
-    ],
   },
 
-  // Twitter Card
+  // Twitter Card - image handled by app/opengraph-image.jpg
   twitter: {
     card: "summary_large_image",
     title: "Physik Konsole",
     description: "Technical documentation system for physics research and laboratory protocols",
-    images: ["/ogimage.png"],
   },
 
   // Additional metadata
