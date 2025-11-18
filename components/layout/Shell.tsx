@@ -20,6 +20,22 @@ export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+  const [time, setTime] = useState<string>("");
+
+  // Update time every second
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      const date = now.toISOString().split('T')[0];
+      const timeStr = now.toTimeString().split(' ')[0];
+      setTime(`${date} // ${timeStr}`);
+    };
+    
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Lock body scroll when menu is open
   useEffect(() => {
     if (isMobileMenuOpen) {
@@ -167,18 +183,13 @@ export function Shell({ children }: { children: ReactNode }) {
                         {item.label}
                       </span>
                     </div>
-                    {isActive && (
-                      <span className="animate-pulse font-bold text-primary">
-                        &lt; AKTIV
-                      </span>
-                    )}
                   </Link>
                 );
               })}
             </nav>
             <div className="border-t border-border p-6 bg-card/50">
               <div className="flex justify-between text-[0.6rem] text-muted-foreground font-mono uppercase tracking-wider">
-                <span>TERMINAL SESSION: #8X92</span>
+                <span>{time || "INITIALIZING..."}</span>
                 <span>SECURE CONNECTION</span>
               </div>
             </div>
