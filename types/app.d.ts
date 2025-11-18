@@ -4,7 +4,8 @@ export type ModuleSlug =
   | "praktikum-exp-1"
   | "einfuehrungspraktikum"
   | "mathematische-methoden"
-  | "software-tools";
+  | "software-tools"
+  | "skills-physiker";
 
 export interface Note {
   id: string;

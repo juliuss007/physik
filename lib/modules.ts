@@ -36,6 +36,11 @@ export const MODULES: ModuleDefinition[] = [
     slug: "software-tools",
     name: "Software Tools in der Physik",
     color: "#4B0082" // INDIGO
+  },
+  {
+    slug: "skills-physiker",
+    name: "Skills für Physiker",
+    color: "#006699" // STEEL BLUE
   }
 ];
 
