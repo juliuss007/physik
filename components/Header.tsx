@@ -36,7 +36,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2 border border-border px-4 py-2 text-sm transition-colors uppercase tracking-wide font-semibold",
+                  "flex flex-1 min-w-[calc(50%-0.25rem)] items-center justify-center gap-2 border border-border px-3 py-2 text-sm transition-colors uppercase tracking-wide font-semibold md:min-w-0 md:flex-none md:px-4",
                   isActive ? "bg-primary text-background" : "hover:bg-muted text-foreground"
                 )}
               >
