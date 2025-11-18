@@ -19,12 +19,15 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-30 border-b border-border bg-background">
-      <div className="mx-auto flex w-full max-w-6xl items-center justify-between px-6 py-4">
-        <div>
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-6 py-4 md:flex-row md:items-center md:justify-between">
+        <div className="shrink-0">
           <p className="spec-label">Physik</p>
           <h1 className="text-2xl font-semibold text-foreground">Notiz- & Prüfungs-Tracker</h1>
         </div>
-        <nav aria-label="Hauptnavigation" className="flex items-center gap-2">
+        <nav
+          aria-label="Hauptnavigation"
+          className="flex w-full flex-wrap items-center gap-2 md:w-auto md:justify-end"
+        >
           {navigation.map((item) => {
             const Icon = item.icon;
             const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
@@ -33,7 +36,7 @@ export function Header() {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "flex items-center gap-2 border border-border px-4 py-2 text-sm transition-colors uppercase tracking-wide font-semibold",
+                  "flex flex-1 min-w-[calc(50%-0.25rem)] items-center justify-center gap-2 border border-border px-3 py-2 text-sm transition-colors uppercase tracking-wide font-semibold md:min-w-0 md:flex-none md:px-4",
                   isActive ? "bg-primary text-background" : "hover:bg-muted text-foreground"
                 )}
               >
