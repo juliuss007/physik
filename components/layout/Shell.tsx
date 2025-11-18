@@ -67,7 +67,7 @@ export function Shell({ children }: { children: ReactNode }) {
                       {activeItem ? activeItem.code : "00"}
                     </span>
                     <span className="text-foreground font-bold tracking-widest uppercase">
-                      // {activeItem ? activeItem.label : "ÜBERSICHT"}
+                      {"//"} {activeItem ? activeItem.label : "ÜBERSICHT"}
                     </span>
                   </div>
                 </div>

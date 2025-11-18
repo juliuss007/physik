@@ -1,5 +1,13 @@
 {
-  "/page": "app/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/api/compile-latex/route": "app/api/compile-latex/route.js",
   "/notes/page": "app/notes/page.js",
-  "/settings/page": "app/settings/page.js"
+  "/page": "app/page.js",
+  "/notes/[id]/page": "app/notes/[id]/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/opengraph-image.jpg/route": "app/opengraph-image.jpg/route.js",
+  "/calendar/page": "app/calendar/page.js",
+  "/api/mcp/[transport]/route": "app/api/mcp/[transport]/route.js",
+  "/api/notes-to-pdf/route": "app/api/notes-to-pdf/route.js",
+  "/admin/page": "app/admin/page.js"
 }
