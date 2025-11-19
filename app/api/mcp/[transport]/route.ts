@@ -53,13 +53,7 @@ const handler = async (
         version: "1.0.0"
       },
       capabilities: {
-        tools: {
-          render_math_markdown: { description: "Render Markdown+LaTeX to sanitized HTML" },
-          list_modules: { description: "List configured study modules" },
-          compile_timetable_range: { description: "Expand static timetable into date range" },
-          validate_event: { description: "Validate and normalize an event" },
-          search_notes_in_payload: { description: "Search notes passed in the call" }
-        }
+        tools: {}
       }
     },
     // adapter options
