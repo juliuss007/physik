@@ -44,7 +44,7 @@ const eventSchema = z.object({
 const sanitizeSchema = structuredClone(markdownSanitizeSchema);
 
 export function registerTools(server: McpServer) {
-  server.tool(
+  server.registerTool(
     "render_math_markdown",
     {
       inputSchema: z.object({ markdown: z.string().min(1) }),
@@ -69,8 +69,9 @@ export function registerTools(server: McpServer) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "list_modules",
+    { description: "List configured study modules" },
     async () => {
       return {
         content: [{ type: "text", text: JSON.stringify(MODULES) } as const],
@@ -79,7 +80,7 @@ export function registerTools(server: McpServer) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "compile_timetable_range",
     {
       inputSchema: z.object({
@@ -97,7 +98,7 @@ export function registerTools(server: McpServer) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "validate_event",
     {
       inputSchema: eventSchema,
@@ -150,7 +151,7 @@ export function registerTools(server: McpServer) {
     }
   );
 
-  server.tool(
+  server.registerTool(
     "search_notes_in_payload",
     {
       inputSchema: z.object({
