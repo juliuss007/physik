@@ -1,4 +1,8 @@
 @import "../styles/tailwind.css";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/ibm-plex-mono/500.css";
+@import "@fontsource/ibm-plex-mono/600.css";
+@import "@fontsource/ibm-plex-mono/700.css";
 @import "../styles/fullcalendar.css";
 @import url("/katex/katex.min.css");
 
@@ -6,6 +10,7 @@
 :root.dark {
   /* Engineering datasheet theme - strict monochrome with fluorescent accents */
   --radius: 0rem; /* No rounded corners - sharp rectilinear only */
+  --font-mono: "IBM Plex Mono";
 
   /* Pure black background */
   --background: #000000;

@@ -7,12 +7,8 @@ interface RouteParams {
   transport: string;
 }
 
-const handler = async (
-  req: Request,
-  { params }: { params: Promise<RouteParams> | RouteParams }
-) => {
-  const resolvedParams = params instanceof Promise ? await params : params;
-  const { transport } = resolvedParams;
+const handler = async (req: Request, { params }: { params: Promise<RouteParams> }) => {
+  const { transport } = await params;
   const redisUrl = process.env.REDIS_URL;
 
   if (transport === "sse" && !redisUrl) {

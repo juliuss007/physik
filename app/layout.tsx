@@ -1,15 +1,8 @@
 import type { Metadata, Viewport } from "next";
-import { IBM_Plex_Mono } from "next/font/google";
 
 import "./globals.css";
 import { AppProviders } from "./providers";
 import { Shell } from "@/components/layout/Shell";
-
-const ibmPlexMono = IBM_Plex_Mono({
-  weight: ["400", "500", "600", "700"],
-  subsets: ["latin"],
-  variable: "--font-mono"
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://physik.vercel.app'),
@@ -61,7 +54,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="de" className={ibmPlexMono.variable}>
+    <html lang="de">
       <body className="min-h-screen bg-background text-foreground antialiased font-mono">
         <AppProviders>
           <Shell>{children}</Shell>
