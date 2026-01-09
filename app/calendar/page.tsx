@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+
 import { CalendarView } from "@/components/CalendarView";
 import type { Metadata } from "next";
 
@@ -15,7 +17,9 @@ export default function CalendarPage() {
         </p>
       </div>
       <div className="border border-border bg-card p-6">
-        <CalendarView />
+        <Suspense fallback={<div className="text-sm text-muted-foreground">Kalender wird geladen …</div>}>
+          <CalendarView />
+        </Suspense>
       </div>
     </div>
   );

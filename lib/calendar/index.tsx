@@ -118,8 +118,33 @@ export function getModuleLabel(module?: CalendarEvent["module"]) {
 }
 
 export function getUpcomingEvents(events: CalendarEvent[], limit = 4) {
+  const now = Date.now();
   return [...events]
     .filter((event) => event.kind !== "class")
+    .filter((event) => {
+      const startDate = new Date(event.start);
+      if (Number.isNaN(startDate.getTime())) return false;
+
+      if (event.end) {
+        const endDate = new Date(event.end);
+        return !Number.isNaN(endDate.getTime()) && endDate.getTime() >= now;
+      }
+
+      if (event.allDay) {
+        const dayEnd = new Date(
+          startDate.getFullYear(),
+          startDate.getMonth(),
+          startDate.getDate(),
+          23,
+          59,
+          59,
+          999
+        ).getTime();
+        return dayEnd >= now;
+      }
+
+      return startDate.getTime() >= now;
+    })
     .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
     .slice(0, limit);
 }

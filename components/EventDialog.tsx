@@ -20,6 +20,23 @@ interface EventDialogProps {
   onDelete?: (id: string) => void;
 }
 
+function toLocalInputValue(iso?: string) {
+  if (!iso) return "";
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return "";
+  const pad = (value: number) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(
+    date.getMinutes()
+  )}`;
+}
+
+function toIsoFromLocalInput(value: string) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return "";
+  return date.toISOString();
+}
+
 const moduleOptions = [{ label: "Ohne Modul", value: "" as const }, ...MODULES.map((m) => ({ value: m.slug, label: m.name }))];
 
 export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit, onDelete }: EventDialogProps) {
@@ -84,8 +101,8 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
               <Input
                 id="event-start"
                 type="datetime-local"
-                value={start ? start.slice(0, 16) : ""}
-                onChange={(event) => setStart(new Date(event.target.value).toISOString())}
+                value={toLocalInputValue(start)}
+                onChange={(event) => setStart(toIsoFromLocalInput(event.target.value))}
               />
             </div>
             <div className="space-y-1">
@@ -93,10 +110,9 @@ export function EventDialog({ open, onOpenChange, event, defaultTimes, onSubmit,
               <Input
                 id="event-end"
                 type="datetime-local"
-                value={end ? end.slice(0, 16) : ""}
+                value={toLocalInputValue(end)}
                 onChange={(event) => {
-                  const value = event.target.value;
-                  setEnd(value ? new Date(value).toISOString() : "");
+                  setEnd(toIsoFromLocalInput(event.target.value));
                 }}
               />
             </div>

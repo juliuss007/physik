@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -18,42 +19,9 @@ export function CalendarView() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [draftRange, setDraftRange] = useState<{ start: string; end: string } | undefined>();
-  const [stylesLoaded, setStylesLoaded] = useState(false);
-
-  useEffect(() => {
-    const loadStyles = async () => {
-      try {
-        const version = "6.1.19";
-        const urls = [
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/core@${version}/index.global.min.css`,
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/daygrid@${version}/index.global.min.css`,
-          `https://cdn.jsdelivr.net/npm/@fullcalendar/timegrid@${version}/index.global.min.css`
-        ];
-
-        await Promise.all(
-          urls.map((href) => {
-            if (document.querySelector(`link[data-fc-css="${href}"]`)) {
-              return Promise.resolve();
-            }
-            return new Promise<void>((resolve, reject) => {
-              const link = document.createElement("link");
-              link.rel = "stylesheet";
-              link.href = href;
-              link.dataset.fcCss = href;
-              link.onload = () => resolve();
-              link.onerror = () => reject(new Error(`Konnte ${href} nicht laden`));
-              document.head.appendChild(link);
-            });
-          })
-        );
-      } catch (error) {
-        console.error("FullCalendar styles konnten nicht geladen werden", error);
-      } finally {
-        setStylesLoaded(true);
-      }
-    };
-    loadStyles();
-  }, []);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const autoOpenHandled = useRef(false);
 
   const timetableEvents = useMemo<EventInput[]>(
     () =>
@@ -91,13 +59,34 @@ export function CalendarView() {
     [events]
   );
 
-  if (!stylesLoaded) {
-    return (
-      <div className="border border-border bg-card p-6 text-sm text-muted-foreground">
-        Kalender wird geladen …
-      </div>
-    );
-  }
+  const legendModules = useMemo(() => {
+    const seen = new Set<ModuleSlug>();
+    return TIMETABLE_DATA.filter((entry) => {
+      if (seen.has(entry.module)) return false;
+      seen.add(entry.module);
+      return true;
+    });
+  }, []);
+
+  const openNewEventDialog = useCallback((base?: Date) => {
+    setSelectedEvent(null);
+    const start = base ?? new Date();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    setDraftRange({ start: start.toISOString(), end: end.toISOString() });
+    setDialogOpen(true);
+  }, []);
+
+  useEffect(() => {
+    const shouldOpen = searchParams?.get("new") === "1";
+    if (!shouldOpen) {
+      autoOpenHandled.current = false;
+      return;
+    }
+    if (autoOpenHandled.current) return;
+    autoOpenHandled.current = true;
+    openNewEventDialog();
+    router.replace("/calendar", { scroll: false });
+  }, [searchParams, router, openNewEventDialog]);
 
   const handleSelect = (selection: DateSelectArg) => {
     setDraftRange({
@@ -137,13 +126,7 @@ export function CalendarView() {
           <p className="text-sm text-slate-300">Vorlesungen, Praktika und eigene Prüfungen im Blick.</p>
         </div>
         <Button
-          onClick={() => {
-            setSelectedEvent(null);
-            const now = new Date();
-            const end = new Date(now.getTime() + 60 * 60 * 1000);
-            setDraftRange({ start: now.toISOString(), end: end.toISOString() });
-            setDialogOpen(true);
-          }}
+          onClick={() => openNewEventDialog()}
           className="no-print"
         >
           Ereignis hinzufügen
@@ -189,8 +172,8 @@ export function CalendarView() {
         <span className="flex items-center gap-2">
           <span className="h-3 w-3" style={{ backgroundColor: "#660066" }} /> Sondertermin
         </span>
-        {TIMETABLE_DATA.map((entry) => (
-          <span key={entry.title} className="flex items-center gap-2">
+        {legendModules.map((entry) => (
+          <span key={entry.module} className="flex items-center gap-2">
             <span className="h-3 w-3" style={{ backgroundColor: MODULE_COLOR_MAP[entry.module] }} />
             {MODULE_NAME_MAP[entry.module]}
           </span>

@@ -88,7 +88,7 @@ export default function DashboardPage() {
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
             </button>
-            <Link href="/calendar" className="block p-4 transition-opacity hover:opacity-70 cursor-pointer">
+            <Link href="/calendar?new=1" className="block p-4 transition-opacity hover:opacity-70 cursor-pointer">
               <div className="flex items-center justify-between">
                 <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">NEUEN KALENDEREINTRAG HINZUFÜGEN</span>
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
