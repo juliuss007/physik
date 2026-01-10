@@ -1,6 +1,5 @@
-import type { Config } from "tailwindcss";
-
-const config: Config = {
+/** @type {import("tailwindcss").Config} */
+module.exports = {
   darkMode: "class",
   content: [
     "./app/**/*.{ts,tsx}",
@@ -57,12 +56,10 @@ const config: Config = {
         scanline: "repeating-linear-gradient(0deg, rgba(255,79,0,0.03) 0px, rgba(255,79,0,0.03) 1px, transparent 1px, transparent 2px)"
       },
       spacing: {
-        '18': '4.5rem',
-        '22': '5.5rem'
+        "18": "4.5rem",
+        "22": "5.5rem"
       }
     }
   },
   plugins: []
 };
-
-export default config;
