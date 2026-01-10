@@ -90,14 +90,14 @@ Pipeline is configured in:
 - `lib/mcp/tools.ts` - For MCP tool rendering
 - `lib/sanitize.ts` - Shared sanitization schema
 
-**Note**: KaTeX CSS is a placeholder at `public/katex/katex.min.css` - replace with actual file from `katex/dist/katex.min.css` if needed.
+**Note**: KaTeX CSS is imported from `katex/dist/katex.min.css` in `app/layout.tsx`.
 
 ### PDF Export
 
-PDF generation uses `html2pdf.js` (see `lib/pdf.ts` and `components/PdfExportButton.tsx`):
-- Renders the note preview container to PDF
-- Print-specific styles applied via CSS
-- Client-side only (uses `isBrowser()` check)
+PDF generation uses the LaTeX pipeline (see `lib/markdownToLatex.ts`, `lib/latexTemplate.ts`, and `app/api/notes-to-pdf/route.ts`):
+- Converts Markdown + LaTeX to a full TeX document
+- Compiles via external LaTeX service
+- Served as a downloadable PDF from the API route
 
 ### Calendar System
 
@@ -151,12 +151,12 @@ The project includes a Model Context Protocol (MCP) server for AI integration:
 
 ## Tech Stack
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 16 (App Router)
 - **Styling**: Tailwind CSS + shadcn/ui (Radix UI components)
 - **Calendar**: FullCalendar (`@fullcalendar/react`)
 - **Markdown**: react-markdown + unified ecosystem
 - **Math**: KaTeX (via `rehype-katex`)
-- **PDF**: html2pdf.js
+- **PDF**: LaTeX-based PDF export via API
 - **Animations**: framer-motion
 - **MCP**: `@modelcontextprotocol/sdk` + `mcp-handler`
 

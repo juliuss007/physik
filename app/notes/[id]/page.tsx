@@ -1,33 +1,41 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import dynamic from "next/dynamic";
 import { useParams, useRouter } from "next/navigation";
 import { Trash2, Save } from "lucide-react";
 
 import { NoteEditor } from "@/components/NoteEditor";
-import { NotePreview } from "@/components/NotePreview";
 import { PdfExportButton } from "@/components/PdfExportButton";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/Card";
 import { useNotes } from "@/lib/notes";
 import type { Note } from "@/types/app";
 
+const NotePreview = dynamic(
+  () => import("@/components/NotePreview").then((mod) => mod.NotePreview),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="border border-border bg-card p-6 text-sm text-muted-foreground">
+        Vorschau wird geladen …
+      </div>
+    )
+  }
+);
+
 export default function NoteDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
   const { notes, updateNote, deleteNote } = useNotes();
-  const [draft, setDraft] = useState<Note | null>(null);
 
   const note = useMemo(() => notes.find((item) => item.id === params.id), [notes, params.id]);
 
   useEffect(() => {
-    if (note) {
-      setDraft(note);
-      document.title = `Physik Konsole - ${note.title || 'Notiz'}`;
-    }
+    document.title = note ? `Physik Konsole - ${note.title || "Notiz"}` : "Physik Konsole - Notiz";
   }, [note]);
 
-  if (!note || !draft) {
+  if (!note) {
     return (
       <Card
         title="Notiz nicht gefunden"
@@ -40,6 +48,20 @@ export default function NoteDetailPage() {
     );
   }
 
+  return (
+    <NoteDetailContent key={note.id} note={note} updateNote={updateNote} deleteNote={deleteNote} />
+  );
+}
+
+interface NoteDetailContentProps {
+  note: Note;
+  updateNote: (note: Note) => void;
+  deleteNote: (id: string) => void;
+}
+
+function NoteDetailContent({ note, updateNote, deleteNote }: NoteDetailContentProps) {
+  const router = useRouter();
+  const [draft, setDraft] = useState<Note>(() => note);
   const previewContainerId = `note-preview-${note.id}`;
 
   const handleChange = (updated: Note) => {
@@ -63,7 +85,7 @@ export default function NoteDetailPage() {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h2 className="text-3xl font-semibold tracking-tight text-foreground">Notiz bearbeiten</h2>
         <div className="flex flex-wrap gap-2">
-          <PdfExportButton note={draft} containerId={previewContainerId} />
+          <PdfExportButton note={draft} />
           <Button variant="destructive" onClick={handleDelete} className="gap-2">
             <Trash2 className="h-4 w-4" aria-hidden /> Löschen
           </Button>

@@ -7,7 +7,6 @@ import type { Note } from "@/types/app";
 
 interface PdfExportButtonProps {
   note: Note;
-  containerId: string;
 }
 
 export function PdfExportButton({ note }: PdfExportButtonProps) {

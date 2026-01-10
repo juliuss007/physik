@@ -2,9 +2,8 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { ArrowRight, CalendarDays, FileText, NotebookPen, TrendingUp } from "lucide-react";
-import { motion } from "framer-motion";
+import { useEffect } from "react";
+import { ArrowRight } from "lucide-react";
 
 import { Card } from "@/components/Card";
 import { ModuleBadge } from "@/components/ModuleBadge";
@@ -19,10 +18,9 @@ export default function DashboardPage() {
   const router = useRouter();
   const { notes, createNote } = useNotes();
   const { events } = useCalendar();
-  const [mounted, setMounted] = useState(false);
+  const isClient = typeof window !== "undefined";
 
   useEffect(() => {
-    setMounted(true);
     document.title = "Physik Konsole - Übersicht";
   }, []);
 
@@ -88,7 +86,7 @@ export default function DashboardPage() {
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
               </div>
             </button>
-            <Link href="/calendar?new=1" className="block p-4 transition-opacity hover:opacity-70 cursor-pointer">
+            <Link href="/calendar?new=1" prefetch={false} className="block p-4 transition-opacity hover:opacity-70 cursor-pointer">
               <div className="flex items-center justify-between">
                 <span className="text-[0.7rem] uppercase tracking-widest text-foreground font-bold">NEUEN KALENDEREINTRAG HINZUFÜGEN</span>
                 <ArrowRight className="h-3.5 w-3.5 text-muted-foreground" />
@@ -156,6 +154,7 @@ export default function DashboardPage() {
                 <Link
                   key={note.id}
                   href={`/notes/${note.id}`}
+                  prefetch={false}
                   className="block p-4 transition-opacity hover:opacity-70 cursor-pointer"
                 >
                   <div className="flex items-start justify-between gap-4 mb-2">
@@ -167,7 +166,7 @@ export default function DashboardPage() {
                   <div className="flex flex-wrap items-center gap-3">
                     <ModuleBadge module={note.module} />
                     <span className="spec-label font-mono" suppressHydrationWarning>
-                      {mounted && `${formatDate(note.updatedAt)} · ${formatTime(note.updatedAt)}`}
+                      {isClient && `${formatDate(note.updatedAt)} · ${formatTime(note.updatedAt)}`}
                     </span>
                   </div>
                 </Link>
@@ -192,6 +191,7 @@ export default function DashboardPage() {
                 <Link
                   key={event.id}
                   href="/calendar"
+                  prefetch={false}
                   className="block p-4 transition-opacity hover:opacity-70 cursor-pointer"
                 >
                   <div className="flex items-start justify-between gap-4 mb-2">
@@ -200,7 +200,7 @@ export default function DashboardPage() {
                   </div>
                   <div className="space-y-2">
                     <p className="spec-label !text-muted-foreground font-mono" suppressHydrationWarning>
-                      {mounted && (
+                      {isClient && (
                         <>
                           {formatDate(event.start)}
                           {event.end ? ` · ${formatTime(event.start)} – ${formatTime(event.end)}` : ` · ${formatTime(event.start)}`}

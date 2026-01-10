@@ -40,5 +40,3 @@ export interface TimetableEntry {
 export interface SettingsState {
   theme: "dark" | "light";
 }
-
-declare module "html2pdf.js";

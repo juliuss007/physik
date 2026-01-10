@@ -1,11 +1,11 @@
 # Physik Notiz-Tracker
 
-Next.js 14 App-Router-Projekt für einen lokalen Notiz- und Prüfungs-Tracker im Physikstudium. Enthält Markdown/LaTeX-Rendering, PDF-Export, FullCalendar-Integration sowie lokale Persistenz in `localStorage`.
+Next.js 16 App-Router-Projekt für einen lokalen Notiz- und Prüfungs-Tracker im Physikstudium. Enthält Markdown/LaTeX-Rendering, PDF-Export, FullCalendar-Integration sowie lokale Persistenz in `localStorage`.
 
 ## Features
 - Modul-Dashboard mit Glas-Optik (Tailwind CSS + shadcn/ui)
 - Markdown-Editor mit Live-Vorschau (react-markdown + KaTeX)
-- Clientseitiger PDF-Export mittels `html2pdf.js` inkl. Print-Styles
+- PDF-Export via LaTeX-Compilation (Server-API)
 - FullCalendar (Monats- & Wochenansicht) mit festem Stundenplan und eigenen Prüfungen
 - Backup/Restore von Notizen & Events (JSON), iCal-Export (.ics), Schriftgrößen-Umschalter
 - Vollständig clientseitig, Statusverwaltung via Context + Reducer
@@ -21,7 +21,7 @@ Next.js 14 App-Router-Projekt für einen lokalen Notiz- und Prüfungs-Tracker im
    ```
 3. Projekt im Browser via `http://localhost:3000` öffnen.
 
-> Hinweis: Für KaTeX steht eine Platzhalter-CSS unter `public/katex/katex.min.css`. Bei Bedarf den Inhalt durch die Datei aus dem npm-Paket `katex/dist/katex.min.css` ersetzen.
+> Hinweis: Die KaTeX-CSS wird direkt aus `katex/dist/katex.min.css` eingebunden.
 
 ## Skripte
 - `npm run dev` – Entwicklung
@@ -52,7 +52,7 @@ app/            # App Router Seiten (Dashboard, Notizen, Kalender, Settings)
 components/     # UI-Komponenten (Glass Cards, Editor, Kalender, shadcn/ui)
 lib/            # Module, Notes/Calendar/Settings-Contexts, Utilities
 styles/         # Tailwind setup
-public/         # Statische Assets (KaTeX, Fonts)
+public/         # Statische Assets
 ```
 
 ## Barrierefreiheit

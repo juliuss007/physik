@@ -1,7 +1,6 @@
-import { Suspense } from "react";
-
-import { CalendarView } from "@/components/CalendarView";
 import type { Metadata } from "next";
+
+import { CalendarViewClient } from "@/components/CalendarViewClient";
 
 export const metadata: Metadata = {
   title: "Physik Konsole - Kalender",
@@ -17,9 +16,7 @@ export default function CalendarPage() {
         </p>
       </div>
       <div className="border border-border bg-card p-6">
-        <Suspense fallback={<div className="text-sm text-muted-foreground">Kalender wird geladen …</div>}>
-          <CalendarView />
-        </Suspense>
+        <CalendarViewClient />
       </div>
     </div>
   );

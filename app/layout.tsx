@@ -1,5 +1,11 @@
 import type { Metadata, Viewport } from "next";
 
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+import "@fontsource/ibm-plex-mono/600.css";
+import "@fontsource/ibm-plex-mono/700.css";
+import "katex/dist/katex.min.css";
+import "../styles/fullcalendar.css";
 import "./globals.css";
 import { AppProviders } from "./providers";
 import { Shell } from "@/components/layout/Shell";

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
@@ -16,12 +16,17 @@ import type { CalendarEvent, ModuleSlug } from "@/types/app";
 
 export function CalendarView() {
   const { events, createEvent, updateEvent, deleteEvent } = useCalendar();
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
-  const [draftRange, setDraftRange] = useState<{ start: string; end: string } | undefined>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const autoOpenHandled = useRef(false);
+  const shouldAutoOpen = searchParams?.get("new") === "1";
+  const [dialogOpen, setDialogOpen] = useState(() => shouldAutoOpen);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [draftRange, setDraftRange] = useState<{ start: string; end: string } | undefined>(() => {
+    if (!shouldAutoOpen) return undefined;
+    const start = new Date();
+    const end = new Date(start.getTime() + 60 * 60 * 1000);
+    return { start: start.toISOString(), end: end.toISOString() };
+  });
 
   const timetableEvents = useMemo<EventInput[]>(
     () =>
@@ -77,16 +82,9 @@ export function CalendarView() {
   }, []);
 
   useEffect(() => {
-    const shouldOpen = searchParams?.get("new") === "1";
-    if (!shouldOpen) {
-      autoOpenHandled.current = false;
-      return;
-    }
-    if (autoOpenHandled.current) return;
-    autoOpenHandled.current = true;
-    openNewEventDialog();
+    if (!shouldAutoOpen) return;
     router.replace("/calendar", { scroll: false });
-  }, [searchParams, router, openNewEventDialog]);
+  }, [shouldAutoOpen, router]);
 
   const handleSelect = (selection: DateSelectArg) => {
     setDraftRange({
