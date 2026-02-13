@@ -6,6 +6,7 @@ import type { Note } from "@/types/app";
 import { DEFAULT_MODULE } from "@/lib/modules";
 import { loadFromStorage, saveToStorage } from "@/lib/storage";
 import { generateId } from "@/lib/utils";
+import { normalizeImportedNotes, normalizeNote, sortNotesByUpdatedAtDesc } from "@/lib/notes/normalize";
 
 const NOTES_STORAGE_KEY = "physik-notes";
 
@@ -43,9 +44,9 @@ function noteReducer(state: NotesState, action: NotesAction): NotesState {
     }
     case "update": {
       return {
-        notes: state.notes
-          .map((note) => (note.id === action.payload.id ? { ...action.payload } : note))
-          .sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))
+        notes: sortNotesByUpdatedAtDesc(
+          state.notes.map((note) => (note.id === action.payload.id ? { ...action.payload } : note))
+        )
       };
     }
     case "delete": {
@@ -53,7 +54,7 @@ function noteReducer(state: NotesState, action: NotesAction): NotesState {
     }
     case "bulk-set": {
       return {
-        notes: [...action.payload].sort((a, b) => (a.updatedAt < b.updatedAt ? 1 : -1))
+        notes: sortNotesByUpdatedAtDesc(action.payload)
       };
     }
     default:
@@ -67,14 +68,14 @@ interface NotesContextValue {
   updateNote: (note: Note) => void;
   deleteNote: (id: string) => void;
   duplicateNote: (id: string) => Note | undefined;
-  importNotes: (notes: Note[]) => void;
+  importNotes: (notes: Note[]) => number;
 }
 
 const NotesContext = createContext<NotesContextValue | null>(null);
 
 export function NotesProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(noteReducer, initialState, (init) => {
-    const stored = loadFromStorage<Note[]>(NOTES_STORAGE_KEY, []);
+    const stored = normalizeImportedNotes(loadFromStorage<unknown>(NOTES_STORAGE_KEY, []));
     if (!stored.length) {
       const starter = createEmptyNote({
         title: "Willkommen beim Notiz-Tracker",
@@ -99,7 +100,9 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const updateNote = useCallback((note: Note) => {
-    dispatch({ type: "update", payload: note });
+    const normalized = normalizeNote(note);
+    if (!normalized) return;
+    dispatch({ type: "update", payload: normalized });
   }, []);
 
   const deleteNote = useCallback((id: string) => {
@@ -124,7 +127,9 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
   );
 
   const importNotes = useCallback((notes: Note[]) => {
-    dispatch({ type: "bulk-set", payload: notes });
+    const normalized = normalizeImportedNotes(notes);
+    dispatch({ type: "bulk-set", payload: normalized });
+    return normalized.length;
   }, []);
 
   const value = useMemo(

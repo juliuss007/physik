@@ -9,6 +9,11 @@ interface MathBlock {
   type: "inline" | "display";
 }
 
+interface ProtectedBlock {
+  id: string;
+  replacement: string;
+}
+
 function escapeLatex(text: string): string {
   return text
     .replace(/\\/g, "\\textbackslash{}")
@@ -25,52 +30,67 @@ function escapeLatex(text: string): string {
     .replace(/>/g, "\\textgreater{}");
 }
 
+function protectBlock(blocks: ProtectedBlock[], replacement: string, prefix: string): string {
+  const id = `${prefix}${blocks.length}ENDX`;
+  blocks.push({ id, replacement });
+  return id;
+}
+
+function restoreBlocks(content: string, blocks: ProtectedBlock[]): string {
+  let restored = content;
+  for (const block of blocks) {
+    restored = restored.replaceAll(block.id, block.replacement);
+  }
+  return restored;
+}
+
 export function markdownToLatex(markdown: string): string {
   const mathBlocks: MathBlock[] = [];
+  const formatBlocks: ProtectedBlock[] = [];
   let processed = markdown;
 
   // Step 1: Extract and protect all math
-  processed = processed.replace(/\$\$([\s\S]+?)\$\$/g, (_, content) => {
+  processed = processed.replace(/(?<!\\)\$\$([\s\S]+?)(?<!\\)\$\$/g, (_, content) => {
     const id = `XMATHBLKDISP${mathBlocks.length}ENDX`;
     mathBlocks.push({ id, content: content.trim(), type: "display" });
     return ` ${id} `;
   });
 
-  processed = processed.replace(/\$([^\n$]+?)\$/g, (_, content) => {
+  processed = processed.replace(/(?<!\\)\$([\s\S]+?)(?<!\\)\$/g, (_, content) => {
     const id = `XMATHBLKINLN${mathBlocks.length}ENDX`;
     mathBlocks.push({ id, content: content.trim(), type: "inline" });
     return id;
   });
 
   // Escape any remaining $ characters (these are literal dollar signs, not math)
-  processed = processed.replace(/\$/g, "\\$");
+  processed = processed.replace(/(?<!\\)\$/g, "\\$");
 
   // Step 2: Convert inline formatting (escape text content)
   // Order: code first, then combined formats, then single formats
 
   // Inline code
   processed = processed.replace(/`([^`]+)`/g, (_, code) => {
-    return `\\texttt{${escapeLatex(code)}}`;
+    return protectBlock(formatBlocks, `\\texttt{${escapeLatex(code)}}`, "XFMTCODE");
   });
 
   // Bold + Italic combined
   processed = processed.replace(/\*\*\*(.+?)\*\*\*/g, (_, text) => {
-    return `\\textbf{\\textit{${escapeLatex(text)}}}`;
+    return protectBlock(formatBlocks, `\\textbf{\\textit{${escapeLatex(text)}}}`, "XFMTBOTH");
   });
 
   // Bold
   processed = processed.replace(/\*\*(.+?)\*\*/g, (_, text) => {
-    return `\\textbf{${escapeLatex(text)}}`;
+    return protectBlock(formatBlocks, `\\textbf{${escapeLatex(text)}}`, "XFMTBOLD");
   });
 
   // Italic with *
   processed = processed.replace(/\*(.+?)\*/g, (_, text) => {
-    return `\\textit{${escapeLatex(text)}}`;
+    return protectBlock(formatBlocks, `\\textit{${escapeLatex(text)}}`, "XFMTITAL");
   });
 
   // Italic with _
   processed = processed.replace(/_([^_\s]+(?:\s+[^_\s]+)*)_/g, (_, text) => {
-    return `\\textit{${escapeLatex(text)}}`;
+    return protectBlock(formatBlocks, `\\textit{${escapeLatex(text)}}`, "XFMTITALU");
   });
 
   // Step 3: Process lines for headers and lists
@@ -83,13 +103,13 @@ export function markdownToLatex(markdown: string): string {
     // Headers - don't escape (content already has formatting converted)
     if (/^### /.test(line)) {
       const text = line.replace(/^### /, "").trim();
-      output.push(`\\subsection{${text}}`);
+      output.push(`\\subsection{${escapeLatex(text)}}`);
     } else if (/^## /.test(line)) {
       const text = line.replace(/^## /, "").trim();
-      output.push(`\\section{${text}}`);
+      output.push(`\\section{${escapeLatex(text)}}`);
     } else if (/^# /.test(line)) {
       const text = line.replace(/^# /, "").trim();
-      output.push(`\\section*{${text}}`);
+      output.push(`\\section*{${escapeLatex(text)}}`);
     }
     // Bullet lists
     else if (/^[\-\*]\s+/.test(line)) {
@@ -102,7 +122,7 @@ export function markdownToLatex(markdown: string): string {
         inBulletList = true;
       }
       const content = line.replace(/^[\-\*]\s+/, "");
-      output.push(`  \\item ${content}`);
+      output.push(`  \\item ${escapeLatex(content)}`);
     }
     // Numbered lists
     else if (/^\d+\.\s+/.test(line)) {
@@ -115,7 +135,7 @@ export function markdownToLatex(markdown: string): string {
         inNumberedList = true;
       }
       const content = line.replace(/^\d+\.\s+/, "");
-      output.push(`  \\item ${content}`);
+      output.push(`  \\item ${escapeLatex(content)}`);
     }
     // Regular paragraphs - escape if no LaTeX commands present
     else {
@@ -128,9 +148,7 @@ export function markdownToLatex(markdown: string): string {
         inNumberedList = false;
       }
 
-      // Only escape if line has no LaTeX commands (no backslash)
-      // Lines with formatting will have \textbf, \textit, etc.
-      if (line.trim() && !line.includes("\\") && !line.match(/XMATHBLK/)) {
+      if (line.trim()) {
         output.push(escapeLatex(line));
       } else {
         output.push(line);
@@ -147,7 +165,9 @@ export function markdownToLatex(markdown: string): string {
 
   processed = output.join("\n");
 
-  // Step 4: Restore math blocks
+  // Step 4: Restore inline formatting and math blocks
+  processed = restoreBlocks(processed, formatBlocks);
+
   for (const block of mathBlocks) {
     let replacement: string;
     if (block.type === "display") {
@@ -170,7 +190,7 @@ export function markdownToLatex(markdown: string): string {
       console.warn(`Warning: Math block placeholder ${block.id} not found in processed text`);
     }
 
-    processed = processed.replace(new RegExp(block.id, 'g'), replacement);
+    processed = processed.replace(new RegExp(block.id, "g"), replacement);
   }
 
   // Verify no unreplaced placeholders remain

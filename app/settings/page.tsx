@@ -10,7 +10,7 @@ import { useCalendar } from "@/lib/calendar";
 import { downloadJson, downloadTextFile, readFileAsJson } from "@/lib/storage";
 import { useSettings } from "@/lib/settings";
 import { buildCalendarICS } from "@/lib/calendar/ics";
-import type { CalendarEvent, Note, SettingsState } from "@/types/app";
+import type { SettingsState } from "@/types/app";
 
 export default function SettingsPage() {
   const { notes, importNotes } = useNotes();
@@ -47,9 +47,14 @@ export default function SettingsPage() {
 
   const handleImportNotes = async (file: File) => {
     try {
-      const imported = await readFileAsJson<Note[]>(file);
-      importNotes(imported);
-      setMessage("Notizen-Backup erfolgreich importiert.");
+      const imported = await readFileAsJson<unknown>(file);
+      const count = importNotes(Array.isArray(imported) ? imported : []);
+      if (count === 0) {
+        setError("Keine gültigen Notizen im Backup gefunden.");
+        setMessage(null);
+        return;
+      }
+      setMessage(`${count} Notiz(en) erfolgreich importiert.`);
       setError(null);
     } catch (err) {
       console.error(err);
@@ -59,9 +64,14 @@ export default function SettingsPage() {
 
   const handleImportEvents = async (file: File) => {
     try {
-      const imported = await readFileAsJson<CalendarEvent[]>(file);
-      importEvents(imported);
-      setMessage("Termine erfolgreich importiert.");
+      const imported = await readFileAsJson<unknown>(file);
+      const count = importEvents(Array.isArray(imported) ? imported : []);
+      if (count === 0) {
+        setError("Keine gültigen Termine im Backup gefunden.");
+        setMessage(null);
+        return;
+      }
+      setMessage(`${count} Termin(e) erfolgreich importiert.`);
       setError(null);
     } catch (err) {
       console.error(err);

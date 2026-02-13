@@ -11,7 +11,6 @@ import { useNotes } from "@/lib/notes";
 import { useCalendar } from "@/lib/calendar";
 import { buildCalendarICS } from "@/lib/calendar/ics";
 import { downloadJson, downloadTextFile, readFileAsJson } from "@/lib/storage";
-import type { CalendarEvent, Note } from "@/types/app";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -63,13 +62,13 @@ export default function AdminPage() {
   };
 
   const handleImportNotes = async (file: File) => {
-    const imported = await readFileAsJson<Note[]>(file);
-    importNotes(imported);
+    const imported = await readFileAsJson<unknown>(file);
+    importNotes(Array.isArray(imported) ? imported : []);
   };
 
   const handleImportEvents = async (file: File) => {
-    const imported = await readFileAsJson<CalendarEvent[]>(file);
-    importEvents(imported);
+    const imported = await readFileAsJson<unknown>(file);
+    importEvents(Array.isArray(imported) ? imported : []);
   };
 
   const renderImport = (id: string, label: string, onFile: (file: File) => Promise<void>) => (

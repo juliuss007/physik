@@ -9,6 +9,9 @@ type NotesToPdfRequest = {
   title?: string;
 };
 
+const LATEXONLINE_TIMEOUT_MS = 15_000;
+const MAX_UPSTREAM_URL_LENGTH = 7_500;
+
 function sanitizeFilename(title: string): string {
   return title
     .trim()
@@ -60,12 +63,31 @@ export async function POST(request: NextRequest) {
     params.set("download", filename);
     const url = `https://latexonline.cc/compile?${params.toString()}`;
 
-    const apiRes = await fetch(url, {
-      method: "GET",
-      headers: {
-        "User-Agent": "Physik-App/1.0",
-      },
-    });
+    if (url.length > MAX_UPSTREAM_URL_LENGTH) {
+      return NextResponse.json(
+        {
+          error: "Content too large for upstream compiler",
+          details: "Bitte kürze die Notiz oder nutze den lokalen Export."
+        },
+        { status: 413 }
+      );
+    }
+
+    const abort = new AbortController();
+    const timeout = setTimeout(() => abort.abort(), LATEXONLINE_TIMEOUT_MS);
+
+    let apiRes: Response;
+    try {
+      apiRes = await fetch(url, {
+        method: "GET",
+        headers: {
+          "User-Agent": "Physik-App/1.0",
+        },
+        signal: abort.signal
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
 
     // Handle response
     const contentType = apiRes.headers.get("Content-Type") || "";
@@ -99,11 +121,20 @@ export async function POST(request: NextRequest) {
       {
         error: "Upstream LaTeX service error",
         status: apiRes.status,
-        details: errorText,
+        details: errorText.slice(0, 1_500),
       },
       { status: 502 }
     );
   } catch (error) {
+    if (error instanceof Error && error.name === "AbortError") {
+      return NextResponse.json(
+        {
+          error: "Upstream timeout",
+          details: "LaTeX-Compiler hat nicht rechtzeitig geantwortet."
+        },
+        { status: 504 }
+      );
+    }
     console.error("PDF generation error:", error);
     return NextResponse.json(
       {

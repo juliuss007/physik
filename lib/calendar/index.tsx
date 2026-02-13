@@ -6,6 +6,11 @@ import type { CalendarEvent } from "@/types/app";
 import { loadFromStorage, saveToStorage } from "@/lib/storage";
 import { generateId } from "@/lib/utils";
 import { MODULE_NAME_MAP } from "@/lib/modules";
+import {
+  normalizeCalendarEvent,
+  normalizeImportedEvents,
+  sortCalendarEventsByStartAsc
+} from "@/lib/calendar/normalize";
 
 export { TIMETABLE, TIMETABLE_DATA, expandTimetableToRange } from "@/lib/calendar-data";
 
@@ -28,15 +33,17 @@ const initialState: CalendarState = {
 function calendarReducer(state: CalendarState, action: CalendarAction): CalendarState {
   switch (action.type) {
     case "create":
-      return { events: [...state.events, action.payload] };
+      return { events: sortCalendarEventsByStartAsc([...state.events, action.payload]) };
     case "update":
       return {
-        events: state.events.map((event) => (event.id === action.payload.id ? { ...action.payload } : event))
+        events: sortCalendarEventsByStartAsc(
+          state.events.map((event) => (event.id === action.payload.id ? { ...action.payload } : event))
+        )
       };
     case "delete":
       return { events: state.events.filter((event) => event.id !== action.id) };
     case "bulk-set":
-      return { events: [...action.payload] };
+      return { events: sortCalendarEventsByStartAsc(action.payload) };
     default:
       return state;
   }
@@ -47,7 +54,7 @@ interface CalendarContextValue {
   createEvent: (event: Omit<CalendarEvent, "id" | "kind"> & { kind?: CalendarEvent["kind"] }) => CalendarEvent;
   updateEvent: (event: CalendarEvent) => void;
   deleteEvent: (id: string) => void;
-  importEvents: (events: CalendarEvent[]) => void;
+  importEvents: (events: CalendarEvent[]) => number;
 }
 
 const CalendarContext = createContext<CalendarContextValue | null>(null);
@@ -58,7 +65,7 @@ function ensureKind(kind?: CalendarEvent["kind"]): CalendarEvent["kind"] {
 
 export function CalendarProvider({ children }: { children: React.ReactNode }) {
   const [state, dispatch] = useReducer(calendarReducer, initialState, () => {
-    const stored = loadFromStorage<CalendarEvent[]>(EVENTS_STORAGE_KEY, []);
+    const stored = normalizeImportedEvents(loadFromStorage<unknown>(EVENTS_STORAGE_KEY, []));
     return { events: stored } satisfies CalendarState;
   });
 
@@ -68,16 +75,25 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
 
   const createEvent = useCallback(
     (partial: Omit<CalendarEvent, "id" | "kind"> & { kind?: CalendarEvent["kind"] }) => {
-      const event: CalendarEvent = {
-        id: generateId("event"),
-        title: partial.title,
-        start: partial.start,
-        end: partial.end,
-        allDay: partial.allDay,
-        module: partial.module,
-        kind: ensureKind(partial.kind),
-        description: partial.description
-      };
+      const event: CalendarEvent =
+        normalizeCalendarEvent(
+          {
+            ...partial,
+            id: generateId("event"),
+            kind: ensureKind(partial.kind)
+          },
+          { allowGeneratedId: false, fallbackKind: ensureKind(partial.kind) }
+        ) ??
+        ({
+          id: generateId("event"),
+          title: partial.title.trim() || "Termin",
+          start: partial.start,
+          end: partial.end,
+          allDay: partial.allDay,
+          module: partial.module,
+          kind: ensureKind(partial.kind),
+          description: partial.description
+        } satisfies CalendarEvent);
       dispatch({ type: "create", payload: event });
       return event;
     },
@@ -85,7 +101,9 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   );
 
   const updateEvent = useCallback((event: CalendarEvent) => {
-    dispatch({ type: "update", payload: event });
+    const normalized = normalizeCalendarEvent(event, { fallbackKind: ensureKind(event.kind) });
+    if (!normalized) return;
+    dispatch({ type: "update", payload: normalized });
   }, []);
 
   const deleteEvent = useCallback((id: string) => {
@@ -93,7 +111,9 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const importEvents = useCallback((events: CalendarEvent[]) => {
-    dispatch({ type: "bulk-set", payload: events });
+    const normalized = normalizeImportedEvents(events);
+    dispatch({ type: "bulk-set", payload: normalized });
+    return normalized.length;
   }, []);
 
   const value = useMemo(

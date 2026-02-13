@@ -2,14 +2,24 @@ import { NextRequest, NextResponse } from "next/server";
 import latex from "node-latex";
 import { Readable } from "stream";
 
+const MAX_LATEX_CHARS = 200_000;
+
 export async function POST(request: NextRequest) {
   try {
-    const { latexContent } = await request.json();
+    const body = await request.json();
+    const latexContent = body?.latexContent;
 
-    if (!latexContent) {
+    if (typeof latexContent !== "string" || latexContent.trim() === "") {
       return NextResponse.json(
         { error: "No LaTeX content provided" },
         { status: 400 }
+      );
+    }
+
+    if (latexContent.length > MAX_LATEX_CHARS) {
+      return NextResponse.json(
+        { error: "LaTeX content too large" },
+        { status: 413 }
       );
     }
 
@@ -31,6 +41,13 @@ export async function POST(request: NextRequest) {
     }
 
     const pdfBuffer = Buffer.concat(chunks);
+
+    if (pdfBuffer.length === 0) {
+      return NextResponse.json(
+        { error: "LaTeX compiler produced an empty PDF" },
+        { status: 500 }
+      );
+    }
 
     // Return the PDF
     return new NextResponse(pdfBuffer, {
