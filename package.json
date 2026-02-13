@@ -30,6 +30,7 @@
     "mcp-handler": "^1.0.7",
     "next": "^16.1.1",
     "node-latex": "^3.1.0",
+    "pdf-parse": "^1.1.1",
     "react": "^19.2.3",
     "react-day-picker": "^9.13.0",
     "react-dom": "^19.2.3",

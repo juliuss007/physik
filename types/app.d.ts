@@ -7,12 +7,23 @@ export type ModuleSlug =
   | "software-tools"
   | "skills-physiker";
 
+export interface NoteAttachment {
+  id: string;
+  fileName: string;
+  mimeType: string;
+  size: number;
+  pages: number;
+  uploadedAt: string;
+  extractedText?: string;
+}
+
 export interface Note {
   id: string;
   title: string;
   module: ModuleSlug;
   tags: string[];
   content: string;
+  attachments: NoteAttachment[];
   updatedAt: string;
   createdAt: string;
 }

@@ -11,7 +11,6 @@ import rehypeSanitize from "rehype-sanitize";
 import { markdownSanitizeSchema } from "@/lib/sanitize";
 import type { Note } from "@/types/app";
 import { ModuleBadge } from "@/components/ModuleBadge";
-import { cn } from "@/lib/utils";
 
 interface NotePreviewProps {
   note: Note;
@@ -71,6 +70,18 @@ export function NotePreview({ note, containerId }: NotePreviewProps) {
           {note.content}
         </ReactMarkdown>
       </article>
+      {note.attachments.length > 0 && (
+        <section className="border-t border-border pt-4">
+          <h3 className="text-[0.75rem] font-bold uppercase tracking-wider mb-2">PDF-Anhänge</h3>
+          <div className="space-y-1">
+            {note.attachments.map((attachment) => (
+              <p key={attachment.id} className="spec-label">
+                {attachment.fileName} · {attachment.pages} Seite(n)
+              </p>
+            ))}
+          </div>
+        </section>
+      )}
     </section>
   );
 }

@@ -7,6 +7,7 @@ import { DEFAULT_MODULE } from "@/lib/modules";
 import { loadFromStorage, saveToStorage } from "@/lib/storage";
 import { generateId } from "@/lib/utils";
 import { normalizeImportedNotes, normalizeNote, sortNotesByUpdatedAtDesc } from "@/lib/notes/normalize";
+import { deletePdfAttachmentBlobs } from "@/lib/pdf-attachments";
 
 const NOTES_STORAGE_KEY = "physik-notes";
 
@@ -32,6 +33,7 @@ function createEmptyNote(partial: Partial<Note> = {}): Note {
     module: partial.module ?? DEFAULT_MODULE,
     tags: partial.tags ?? [],
     content: partial.content ?? "",
+    attachments: partial.attachments ?? [],
     createdAt: partial.createdAt ?? now,
     updatedAt: partial.updatedAt ?? now
   };
@@ -106,8 +108,11 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const deleteNote = useCallback((id: string) => {
+    const existing = state.notes.find((note) => note.id === id);
+    const attachmentIds = existing?.attachments.map((attachment) => attachment.id) ?? [];
+    void deletePdfAttachmentBlobs(attachmentIds);
     dispatch({ type: "delete", id });
-  }, []);
+  }, [state.notes]);
 
   const duplicateNote = useCallback(
     (id: string) => {
@@ -117,6 +122,7 @@ export function NotesProvider({ children }: { children: React.ReactNode }) {
         ...original,
         id: generateId("note"),
         title: `${original.title} (Kopie)`,
+        attachments: [],
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString()
       };
@@ -160,10 +166,18 @@ export function searchNotes(notes: Note[], query: string) {
   }
 
   return notes.filter((note) => {
+    const attachmentMatch = note.attachments.some((attachment) => {
+      return (
+        attachment.fileName.toLowerCase().includes(normalized) ||
+        attachment.extractedText?.toLowerCase().includes(normalized)
+      );
+    });
+
     return (
       note.title.toLowerCase().includes(normalized) ||
       note.content.toLowerCase().includes(normalized) ||
-      note.tags.some((tag) => tag.toLowerCase().includes(normalized))
+      note.tags.some((tag) => tag.toLowerCase().includes(normalized)) ||
+      attachmentMatch
     );
   });
 }

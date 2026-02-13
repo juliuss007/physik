@@ -93,6 +93,9 @@ function NotesPageInner() {
                     <p className="text-[0.7rem] text-muted-foreground line-clamp-3">
                       {note.content.slice(0, 160) || "Noch kein Inhalt vorhanden."}
                     </p>
+                    {note.attachments.length > 0 && (
+                      <p className="spec-label">PDFs: {note.attachments.length}</p>
+                    )}
                     {note.tags.length > 0 && (
                       <footer className="flex flex-wrap gap-2">
                         {note.tags.map((tag) => (

@@ -18,7 +18,10 @@ const moduleEnum = z.enum([
   "experimentalphysik-1",
   "mathe-physiker-1",
   "praktikum-exp-1",
-  "einfuehrungspraktikum"
+  "einfuehrungspraktikum",
+  "mathematische-methoden",
+  "software-tools",
+  "skills-physiker"
 ]);
 
 const noteSchema = z.object({
@@ -27,6 +30,19 @@ const noteSchema = z.object({
   module: moduleEnum,
   tags: z.array(z.string()),
   content: z.string(),
+  attachments: z
+    .array(
+      z.object({
+        id: z.string(),
+        fileName: z.string(),
+        mimeType: z.string(),
+        size: z.number(),
+        pages: z.number(),
+        uploadedAt: z.string(),
+        extractedText: z.string().optional()
+      })
+    )
+    .optional(),
   updatedAt: z.string(),
   createdAt: z.string()
 });
@@ -166,7 +182,12 @@ export function registerTools(server: McpServer) {
         return (
           note.title.toLowerCase().includes(normalized) ||
           note.content.toLowerCase().includes(normalized) ||
-          note.tags.some((tag) => tag.toLowerCase().includes(normalized))
+          note.tags.some((tag) => tag.toLowerCase().includes(normalized)) ||
+          (note.attachments ?? []).some(
+            (attachment) =>
+              attachment.fileName.toLowerCase().includes(normalized) ||
+              attachment.extractedText?.toLowerCase().includes(normalized)
+          )
         );
       });
 

@@ -18,6 +18,7 @@ describe("notes normalization", () => {
     expect(normalized?.module).toBe("experimentalphysik-1");
     expect(normalized?.tags).toEqual(["tag-a"]);
     expect(normalized?.content).toBe("");
+    expect(normalized?.attachments).toEqual([]);
   });
 
   it("deduplicates imported notes by id and keeps newest updated version", () => {
@@ -44,5 +45,33 @@ describe("notes normalization", () => {
 
     expect(notes).toHaveLength(1);
     expect(notes[0].title).toBe("New");
+  });
+
+  it("normalizes attachments and trims extracted text", () => {
+    const normalized = normalizeNote({
+      id: "note-1",
+      title: "PDF Test",
+      module: "experimentalphysik-1",
+      tags: [],
+      content: "",
+      attachments: [
+        {
+          id: "att-1",
+          fileName: "skript.pdf",
+          mimeType: "application/pdf",
+          size: 1200,
+          pages: 3,
+          uploadedAt: "2025-01-10T08:00:00.000Z",
+          extractedText: "  Quantenmechanik Grundlagen  "
+        }
+      ],
+      createdAt: "2025-01-10T08:00:00.000Z",
+      updatedAt: "2025-01-10T09:00:00.000Z"
+    });
+
+    expect(normalized).not.toBeNull();
+    expect(normalized?.attachments).toHaveLength(1);
+    expect(normalized?.attachments[0].fileName).toBe("skript.pdf");
+    expect(normalized?.attachments[0].extractedText).toBe("Quantenmechanik Grundlagen");
   });
 });

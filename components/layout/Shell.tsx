@@ -7,14 +7,9 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { cn } from "@/lib/utils";
 import { MiniCalendar } from "@/components/layout/MiniCalendar";
-
-const navigation = [
-  { href: "/" as const, label: "ÜBERSICHT", code: "00" },
-  { href: "/notes" as const, label: "NOTIZEN", code: "01" },
-  { href: "/calendar" as const, label: "KALENDER", code: "02" },
-  { href: "/settings" as const, label: "EINSTELLUNGEN", code: "03" },
-  { href: "/admin" as const, label: "ADMIN", code: "04" }
-];
+import { APP_NAVIGATION } from "@/lib/navigation";
+import { CommandPalette } from "@/components/CommandPalette";
+import { requestOpenCommandPalette } from "@/lib/command-palette";
 
 export function Shell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
@@ -48,7 +43,7 @@ export function Shell({ children }: { children: ReactNode }) {
     };
   }, [isMobileMenuOpen]);
 
-  const activeItem = navigation.find(item => 
+  const activeItem = APP_NAVIGATION.find(item => 
     pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href))
   );
 
@@ -73,6 +68,9 @@ export function Shell({ children }: { children: ReactNode }) {
               <p className="spec-label !text-muted-foreground hidden lg:block">
                 VORLESUNGEN · LABOR · PRÜFUNGEN
               </p>
+              <div className="hidden lg:block mt-4">
+                <CommandPalette />
+              </div>
               
               {/* Mobile Header Content */}
               <div className="lg:hidden flex items-center justify-between h-full">
@@ -116,7 +114,7 @@ export function Shell({ children }: { children: ReactNode }) {
         <div className="border-t border-border">
           {/* Desktop Nav */}
           <nav className="hidden lg:flex" aria-label="Hauptnavigation">
-            {navigation.map((item) => {
+            {APP_NAVIGATION.map((item) => {
               const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
               return (
                 <Link
@@ -163,7 +161,7 @@ export function Shell({ children }: { children: ReactNode }) {
               </button>
             </div>
             <nav className="flex-1 overflow-y-auto p-6 space-y-4">
-              {navigation.map((item) => {
+              {APP_NAVIGATION.map((item) => {
                 const isActive = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
                 return (
                   <Link
@@ -188,6 +186,16 @@ export function Shell({ children }: { children: ReactNode }) {
               })}
             </nav>
             <div className="border-t border-border p-6 bg-card/50">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsMobileMenuOpen(false);
+                  requestOpenCommandPalette();
+                }}
+                className="mb-3 w-full border border-border px-4 py-3 text-[0.7rem] font-bold tracking-widest uppercase text-foreground hover:bg-primary hover:text-background transition-colors"
+              >
+                [ COMMAND PALETTE ]
+              </button>
               <div className="flex justify-between text-[0.6rem] text-muted-foreground font-mono uppercase tracking-wider">
                 <span>{time || "INITIALIZING..."}</span>
                 <span>SECURE CONNECTION</span>
